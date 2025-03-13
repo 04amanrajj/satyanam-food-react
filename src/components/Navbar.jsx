@@ -24,6 +24,7 @@ export default function Navbar() {
             <div className="links">
                 <a href=" ">Cart</a>
                 <a href=" ">Order</a>
+                <a href=" ">Contact</a>
                 <a href=" ">Profile</a>
             </div>
         </div>
