@@ -1,36 +1,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Merienda+One&display=swap');
 :root {
-    --primary-color: 111, 76, 255;
+  --primary-color: 102, 51, 204; /* Slightly deeper purple */
+  
+  --bg-accent: #aaa; /* Softer gray for light mode */
+  --bg-secondary: #1f9d55; /* Less bright green */
+  --secondary-text-color: #333;
 
-    --bg-accent: #333;
-    --bg-secondary: whitesmoke;
-    --secondary-text-color: #333;
-
-    /* --bg-primary: whitesmoke; */
-    /* --primary-text-color: black; */
-
-    --bg-primary: #1e1e1e;
-    --primary-text-color: #f9f9f9;
-
-    /* --bg-accent: #cacaca; */
+  --bg--primary: #ECFDF5;
+  --primary-text-color: #222; /* Darker text for better readability */
 }
 
 [data-theme="dark"] {
-    --bg-primary: #000;
-    --bg-secondary: #2e2e2e;
-    --primary-text-color: #f9f9f9;
-    --secondary-text-color: white;
-    --bg-accent: #333;
+  --bg--primary: #207441;
+  --bg-secondary: #3a3a3a; /* Slightly lighter gray for better contrast */
+  --primary-text-color: #f9f9f9;
+  --secondary-text-color: white;
+  --bg-accent: #333;
 }
 
-html,
-body {
+
+html,body {
   scroll-behavior: smooth;
   box-sizing: border-box;
   font-family: ProximaNova, arial, Helvetica Neue, sans-serif;
-  height: 100%;
-  margin: 0;
   padding: 0;
   transition: background 0.2s linear;
-  background-color: #000;
+  background-color: var(--bg--primary) !important;
+  margin: 0;
+  box-sizing: border-box;
+}
+.bg-custom{
+  background-color: var(--bg--primary);
 }

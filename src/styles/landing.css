@@ -56,7 +56,7 @@
     background-color: #f8f8f8;
 }
 
-.browse-menu-button {
+.browse-menu-button a {
     z-index: 10;
     position: absolute;
     left: 50%;
@@ -84,11 +84,11 @@
     /* Continuous right to left sliding effect */
 }
 
-.browse-menu-button:hover {
+.browse-menu-button a:hover {
     box-shadow: rgba(var(--primary-color), 1) 0px 0px 20px 0px;
 }
 
-.browse-menu-button:active {
+.browse-menu-button a:active {
     transform: translateX(-50%) scale(0.95);
 }
 

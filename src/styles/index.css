@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +12,117 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.browse-menu-button {
+  font-size: 26px;
+  font-weight: bolder;
+  color: var(--primary-text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 200px;
+}
+
+.browse-menu-button:hover {
+  transform: scale(1.1);
+}
+
+.browse-menu-button:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
+.main-container main {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 70vh;
+  justify-content: space-around;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .main-container main {
+    flex-direction: column;
+    height: auto;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .browse-menu-button {
+    font-size: 20px;
+    margin-top: 100px;
+  }
+}
+
+.brandname {
+  font-family: "Merienda One", sans-serif;
+}
+
+.slide {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  box-shadow: none;
+}
+
+/* Adjust slide for smaller screens */
+@media (max-width: 768px) {
+  .slide {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+}
+
+.feature {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  width: max-content;
+  left: 0;
+}
+
+.food-img img {
+  border-radius: 50%;
+  width: 400px;
+  height: 400px;
+  object-fit: cover;
+}
+
+/* Responsive food images */
+@media (max-width: 768px) {
+  .food-img img {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.food-img1 {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.box2 {
+  display: flex;
+  transition: all 0.3s ease;
+}
+
+.box-2:hover,
+.box-3:hover {
+  background: #86efac;
+}
+
+/* Adjust hover effects for mobile (optional) */
+@media (max-width: 768px) {
+  .box-2:hover,
+  .box-3:hover {
+    background: #a7f3d0; /* Slightly softer hover effect for touch devices */
+  }
 }
