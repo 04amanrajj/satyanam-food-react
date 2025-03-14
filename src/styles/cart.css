@@ -70,12 +70,11 @@
     padding: 20px;
 }
 .checkout-btn {
-    background: #f9c74f;
     font-weight: bolder;
     color: var(--primary-text-color);
     cursor: pointer;
     transition: all 0.3s ease;
-    border-radius: 20%;
+    border-radius: 20px;
   }
   
 /* Mobile Responsive */

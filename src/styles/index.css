@@ -121,8 +121,78 @@ a {
 
 /* Adjust hover effects for mobile (optional) */
 @media (max-width: 768px) {
+
   .box-2:hover,
   .box-3:hover {
-    background: #a7f3d0; /* Slightly softer hover effect for touch devices */
+    background: #a7f3d0;
+    /* Slightly softer hover effect for touch devices */
   }
+}
+.suggestion .container{
+background-color: white;
+border-radius: 20px;
+padding: 10px 30px;
+}
+.suggestion h1 {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.container img {
+  transition: all 0.3s ease;
+}
+
+.container img:hover {
+  height: 256px;
+  position: absolute;
+  z-index: 10;
+  border-radius: 20px;
+}
+
+.cart-btn {
+  padding: 10px 20px;
+  border-radius: 10px 10px 40px 40px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cart-btn:hover {
+  transform: scaleY(1.1);
+  background-color: #86efac;
+}
+
+.cart-btn:active {
+  transform: scaleY(0.95);
+  background-color: #79d3ae;
+}
+
+.suggestion .card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+}
+
+.suggestion .card img {
+  transition: all 0.3s ease;
+  height: 300px;
+  object-fit: fill;
+}
+
+
+
+.suggestion .card .details {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background:white ;
+  color: black;
+  padding: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.suggestion .card:hover .details {
+  opacity: 1;
 }
