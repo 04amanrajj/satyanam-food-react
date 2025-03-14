@@ -86,7 +86,7 @@ const About = () => {
             <div className="flex justify-between">
               <div className="flex items-center">
                 <i className="fas fa-check-circle text-green-500 text-2xl mr-2"></i>
-                <p>Free <br /> delivery for orders over 1100 rubles</p>
+                <p>Free <br /> delivery for orders over 500rs</p>
               </div>
               <div className="flex items-center">
                 <i className="fas fa-clock text-green-500 text-2xl mr-2"></i>
