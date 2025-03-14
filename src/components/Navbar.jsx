@@ -1,32 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { getData } from "../services/service";
-import '../styles/navbar.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useRestaurant } from "../contexts/RestaurantContext"; // Import context
+import "../styles/navbar.css";
 
 export default function Navbar() {
-    const [product, setProduct] = useState([])
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await getData();
-                setProduct(response.data);
-            } catch (error) {
-                console.log(error.message);
-            }
-        };
-        fetchData();
-    }, [])
-    console.log(product);
-
+    const { restaurant } = useRestaurant(); // Get restaurant data
     return (
-        <div className="navbar">
-            <div className="brandname"> <h1>{product?.restaurantDetails?.name || "Restaurant"}</h1></div>
-            <div className="links">
-                <a href=" ">Cart</a>
-                <a href=" ">Order</a>
-                <a href=" ">Contact</a>
-                <a href=" ">Profile</a>
+        <header className="navbar items-center p-6 bg-white shadow-md">
+            <div className="brandname text-2xl font-bold text-green-600">
+                <Link to="/">
+                    <h1>{restaurant?.name || "Restaurant"}</h1>
+                </Link>
             </div>
-        </div>
+            <nav className="links space-x-6">
+                <Link className="text-black font-semibold" to="/">Home</Link>
+                <Link className="text-gray-600" to="/menu">Menu</Link>
+                <Link className="text-gray-600" to="/about">About Us</Link>
+                <Link className="text-gray-600" to="/contact">Contact</Link>
+                <Link className="text-gray-600" to="/user">Sign Up</Link>
+            </nav>
+        </header>
     )
 }
