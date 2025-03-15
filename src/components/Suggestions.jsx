@@ -20,7 +20,7 @@ const Suggestions = ({ dishes }) => {
   const limitedDishes = [...dishes.slice(0, 4), ...dishes.slice(19, 23)];
   return (
     <div className="suggestion p-6">
-      <div className="container w-100 mx-auto">
+      <div className="container w-100 shadow-md mx-auto mb-20 p-20">
         <h1 className="text-4xl bg-white w-max p-4 rounded-full font-bold mb-6">
           Popular Dishes
         </h1>
@@ -29,13 +29,13 @@ const Suggestions = ({ dishes }) => {
             ? Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-md p-none w-64"
+                className="bg-white rounded-3xl shadow-md p-none w-64"
               >
-                <Skeleton variant="rectangular" width={256} height={160} />
+                <Skeleton className="rounded-t-3xl" variant="rectangular" width={256} height={160} />
                 <div className="p-2">
                   <Skeleton variant="text" width="80%" />
-                  <Skeleton variant="text" width="60%" />
-                  <Skeleton variant="rectangular" width="100%" height={40} />
+                  <Skeleton variant="text" width="20%" />
+                  <Skeleton className="rounded-b-3xl" variant="rectangular" width="100%" height={40} />
                 </div>
               </div>
             ))
@@ -55,7 +55,7 @@ const Suggestions = ({ dishes }) => {
                   <h3 className="text-gray-800 font-semibold text-lg">
                     {dish.name}
                   </h3>
-                  <div className="flex items-center justify-between mt-2">
+                  <div className="flex m-0 items-center justify-between">
                     <span className="text-green-600 font-bold text-xl">
                       Rs.{dish.price}
                     </span>
