@@ -2,7 +2,7 @@ import React from "react";
 
 const NotFound = () => {
     return (
-        <div className="bg-green-500 flex items-center justify-center min-h-screen">
+        <div className="bg-green-500 flex items-center flex-wrap justify-center min-h-screen">
             <img
                 alt="Person with legs sticking out of a box"
                 className="mr-20"
