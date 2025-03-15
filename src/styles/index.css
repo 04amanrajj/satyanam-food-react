@@ -128,24 +128,19 @@ a {
     /* Slightly softer hover effect for touch devices */
   }
 }
-.suggestion .container{
-background-color: white;
-border-radius: 20px;
-padding: 10px 30px;
+
+.suggestion .container {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
 }
+
 .suggestion h1 {
   font-family: 'Times New Roman', Times, serif;
 }
 
 .container img {
   transition: all 0.3s ease;
-}
-
-.container img:hover {
-  height: 256px;
-  position: absolute;
-  z-index: 10;
-  border-radius: 20px;
 }
 
 .cart-btn {
@@ -175,7 +170,7 @@ padding: 10px 30px;
 
 .suggestion .card img {
   transition: all 0.3s ease;
-  height: 300px;
+  height: 256px;
   object-fit: fill;
 }
 
@@ -186,13 +181,22 @@ padding: 10px 30px;
   bottom: 0;
   left: 0;
   right: 0;
-  background:white ;
+  background: white;
   color: black;
   padding: 10px;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
+.suggestion .card .details {
+  opacity: 0;
+  transform: translateY(20px);
+  /* Initially positioned below */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 .suggestion .card:hover .details {
   opacity: 1;
+  transform: translateY(0);
+  /* Moves up smoothly */
 }

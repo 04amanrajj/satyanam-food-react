@@ -23,15 +23,17 @@ body {
     padding: 100px;
     background-size: 100px;
 } */
- .item-card{
+.item-card {
     transition: all 0.2s ease-in;
     cursor: pointer;
- }
-.item-card:hover{
+}
+
+.item-card:hover {
 
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 .item-cards img {
     width: 100%;
     height: 200px;
@@ -91,7 +93,7 @@ body {
     transition: all 0.3s ease;
     position: absolute;
     bottom: 10px;
-    right : 10px;
+    right: 10px;
 }
 
 .btn-glow:hover {
@@ -185,11 +187,39 @@ body {
     background: #0056b3;
 }
 
-.rating{
+.rating {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     position: absolute;
     bottom: 20px;
-    left : 20px;
+    left: 20px;
+}
+
+.cart-checkout-btn {
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s ease-in-out;
+}
+
+.cart-checkout-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #10b981, #059669);
+    transition: left 0.4s ease-in-out;
+    z-index: 0;
+}
+
+.cart-checkout-btn:hover::before {
+    color: white;
+    left: 0;
+}
+
+.cart-checkout-btn span {
+    position: relative;
+    z-index: 1;
 }

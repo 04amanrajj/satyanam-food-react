@@ -3,7 +3,7 @@
   --primary-color: 102, 51, 204; /* Slightly deeper purple */
   
   --bg-accent: #aaa; /* Softer gray for light mode */
-  --bg-secondary: #1f9d55; /* Less bright green */
+  --bg-secondary: #4eb179; /* Less bright green */
   --secondary-text-color: #333;
 
   --bg--primary: #ECFDF5;
@@ -31,4 +31,7 @@ html,body {
 }
 .bg-custom{
   background-color: var(--bg--primary);
+}
+Footer{
+  padding: 10px !important ;
 }
