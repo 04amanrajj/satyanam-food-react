@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { RestaurantProvider } from "./contexts/RestaurantContext"; // Import Context Provider
 import Navbar from './components/Navbar';
-import Products from './components/Products';
 import Home from './pages/Home';
 import Profile from "./pages/Profile";
 import Menu from "./pages/Menu";
@@ -20,7 +19,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/products" element={<Products />} />
           <Route path="/user" element={<Profile />} />
           <Route path="/about" element={<About />} />
           <Route path="/checkout" element={<Checkout />} />
