@@ -11,7 +11,7 @@ const Cart = ({ cartItems, setCartItems }) => {
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const discount = isCouponApplied ? parseFloat((subtotal * 0.2).toFixed(2)) : 0; // 20% discount if coupon applied
   const discountedSubtotal = subtotal - discount;
-  const delivery = discountedSubtotal > 50 ? 0 : 5; // Free delivery for orders above $50
+  const delivery = 0; // Free delivery for orders above $50
   const total = (discountedSubtotal + delivery).toFixed(2);
 
   const applyCoupon = () => {
