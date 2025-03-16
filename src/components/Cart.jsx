@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-const Cart = ({ cartItems, setCartItems }) => {
+const Cart = ({ setBill, cartItems, setCartItems, setShowCart }) => {
   const [couponCode, setCouponCode] = useState("");
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [showInput, setShowInput] = useState(false); // State to toggle input visibility
-  const navigate = useNavigate(); // Initialize navigate function
 
   // Calculate subtotal, discount, tax, and total dynamically
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  const discount = isCouponApplied ? parseFloat((subtotal * 0.2).toFixed(2)) : 0; // 20% discount if coupon applied
+  const subtotal = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  const discount = isCouponApplied
+    ? parseFloat((subtotal * 0.2).toFixed(2))
+    : 0; // 20% discount if coupon applied
   const discountedSubtotal = subtotal - discount;
   const delivery = 0; // Free delivery for orders above $50
   const total = (discountedSubtotal + delivery).toFixed(2);
+
+  // Update bill values whenever subtotal, discount, delivery, or total changes
+  console.log(setBill);
+  useEffect(() => {
+    setBill({
+      subtotal: subtotal.toFixed(2),
+      discount: discount.toFixed(2),
+      delivery: delivery === 0 ? "Free" : delivery.toFixed(2),
+      total: total,
+    });
+  }, [subtotal, discount, delivery, total, setBill]);
 
   const applyCoupon = () => {
     if (couponCode.trim().toUpperCase() === "FOOD20") {
@@ -58,7 +72,9 @@ const Cart = ({ cartItems, setCartItems }) => {
                 width="50"
               />
               <div className="ml-4 flex-1">
-                <h3 className="text-lg mb-0 font-semibold">{item.name}</h3>
+                <h3 className="text-lg mb-0 font-semibold">
+                  {item.name}
+                </h3>
                 <p className="text-gray-500">
                   Rs.{item.price.toFixed(2)}
                 </p>
@@ -84,7 +100,8 @@ const Cart = ({ cartItems, setCartItems }) => {
               onClick={() => setShowInput(true)} // Show input when clicking on the <p> tag
               className="cursor-pointer"
             >
-              <i className="fas fa-tag text-red-500"></i> Do you have any discount code?
+              <i className="fas fa-tag text-red-500"></i> Do you have any
+              discount code?
             </p>
           ) : (
             <div className="flex mt-1">
@@ -104,7 +121,9 @@ const Cart = ({ cartItems, setCartItems }) => {
             </div>
           )
         ) : (
-          <p className="text-green-500 mt-2">Coupon applied successfully!</p>
+          <p className="text-green-500 mt-2">
+            Coupon applied successfully!
+          </p>
         )}
       </div>
       <div className="bg-gray-100 rounded-3xl p-4 mt-6">
@@ -118,7 +137,9 @@ const Cart = ({ cartItems, setCartItems }) => {
         </div>
         <div className="flex justify-between mb-2">
           <span>Delivery</span>
-          <span>{delivery === 0 ? "Free" : `Rs.${delivery.toFixed(2)}`}</span>
+          <span>
+            {delivery === 0 ? "Free" : `Rs.${delivery.toFixed(2)}`}
+          </span>
         </div>
         <div className="border-t border-dashed my-2"></div>
         <div className="flex justify-between font-bold text-lg">
@@ -128,9 +149,11 @@ const Cart = ({ cartItems, setCartItems }) => {
       </div>
       <button
         className="bg-yellow-500 mt-4 flex items-center justify-center cart-checkout-btn relative w-full py-3 rounded-3xl text-white font-bold overflow-hidden"
-        onClick={() => navigate("/checkout")} // Navigate to /checkout
+        onClick={() => setShowCart(false)} // Navigate to /checkout
       >
-        <span>Checkout <i className="fas fa-arrow-right ml-2"></i></span>
+        <span>
+          Checkout <i className="fas fa-arrow-right ml-2"></i>
+        </span>
       </button>
     </div>
   );
