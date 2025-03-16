@@ -16,7 +16,6 @@ const Suggestions = ({ dishes }) => {
     localStorage.setItem("cart", JSON.stringify([...cart, dish]));
     navigate("/menu");
   };
-
   const limitedDishes = [...dishes.slice(0, 4), ...dishes.slice(19, 23)];
   return (
     <div className="suggestion p-6">
@@ -61,9 +60,8 @@ const Suggestions = ({ dishes }) => {
                     </span>
                     <span className="text-green-600 flex items-center">
                       <i
-                        className={`fas fa-circle text-xs mr-1 ${
-                          dish.isVeg ? "text-green-600" : "text-green-600"
-                        }`}
+                        className={`fas fa-circle text-xs mr-1 ${dish.isVeg ? "text-green-600" : "text-green-600"
+                          }`}
                       ></i>
                       {dish.isVeg ? "Veg" : "Veg"}
                     </span>
