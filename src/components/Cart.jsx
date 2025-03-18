@@ -47,7 +47,7 @@ const Cart = ({ setBill, cartItems, setCartItems, setShowCart }) => {
   };
 
   return (
-    <div className="bg-white duration-3000 rounded-3xl w-1/4 ml-10 shadow-lg p-6 mt-4 sticky top-20 h-full">
+    <div className="bg-white duration-3000 rounded-3xl  w-full md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg p-6 mt-4 sticky top-20 h-full">
       <div className="flex justify-between items-center mb-1">
         <h1 className="text-2xl font-bold">Cart</h1>
         <button
