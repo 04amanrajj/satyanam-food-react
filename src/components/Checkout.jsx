@@ -6,7 +6,7 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   console.log(setShowCart)
   return (
-    <div className="bg-white duration-3000 rounded-3xl w-1/4 ml-10 shadow-lg p-6 mt-4" style={{ height: "fit-content" }}>
+    <div className="bg-white duration-3000 rounded-3xl  w-full md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg p-6 mt-4 sticky top-20" style={{ height: "fit-content" }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => setShowCart(true)} className="fas fa-arrow-left text-xl"></button>
@@ -43,7 +43,7 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
           />
           <input
             type="email"
-            className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
+            className="w-full mb-1 -2 bg-gray-100 rounded-lg"
             placeholder="Email Address"
           />
         </div>
