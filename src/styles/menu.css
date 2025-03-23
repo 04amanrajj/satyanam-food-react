@@ -16,6 +16,7 @@ body {
 .item-card {
     transition: all 0.2s ease-in;
     cursor: pointer;
+    height: 100%;
 }
 
 .item-card:hover {
