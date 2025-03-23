@@ -12,7 +12,7 @@ export default function Navbar() {
                 <div className="flex justify-between w-full items-center">
                     <div className="brandname text-2xl font-bold text-green-600">
                         <Link to="/">
-                            <h1>{restaurant?.name || "Restaurant"}</h1>
+                            <h1 className="text-lg md:text-xl">{restaurant?.name || "Restaurant"}</h1>
                         </Link>
                     </div>
 
