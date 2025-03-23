@@ -11,7 +11,8 @@ const Menu = () => {
   const [menuCategories, setMenuCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showCart, setShowCart] = useState(true);
+  const [showCart, setShowCart] = useState(false);
+  const [hideCart, setHideCart] = useState(true);
   const [searchQuery, setSearchQuery] = useState(""); // Add state for search query
   const [bill, setBill] = useState({ null: true });
   const [cartItems, setCartItems] = useState(() => {
@@ -53,7 +54,7 @@ const Menu = () => {
 
   return (
     <div>
-      <div className="menu-container w-11/12  mx-auto p-2 md:p-4">
+      <div className="menu-container w-11/12  mx-auto mb-20 p-2 md:p-4">
         <div className="flex flex-col md:flex-row w-full justify-between items-center ">
           <div className="mt-4 flex justify-around">
             <h2 className="text-5xl mb-4 brandname font-bold">
@@ -76,8 +77,8 @@ const Menu = () => {
           <div className="flex category-div space-x-4 mt-4">
             <button
               className={`py-2 px-3 mt-2 ml-4 category-title w-max rounded-full ${selectedCategory === "All"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-200 text-gray-700"
+                ? "bg-green-500 text-white"
+                : "bg-gray-200 text-gray-700"
                 }`}
               onClick={() => setSelectedCategory("All")}
             >
@@ -87,8 +88,8 @@ const Menu = () => {
               <button
                 key={index}
                 className={`py-2 px-2 mt-2 category-title w-max rounded-full ${selectedCategory === category
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-200 text-gray-700"
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200 text-gray-700"
                   }`}
                 onClick={() => setSelectedCategory(category)}
               >
@@ -98,7 +99,7 @@ const Menu = () => {
           </div>
         </div>
         <div className="flex flex-col md:flex-row relative">
-          <div className="grid grid-cols-2   item-cards w-full md:w-3/4 lg:grid-cols-4 gap-6 mt-6 relative">
+          <div className="grid grid-cols-1 md:w- lg:grid-cols-4 gap-6 mt-6 item-cards w-full relative">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
                 <div
@@ -190,10 +191,10 @@ const Menu = () => {
                               <i
                                 key={index}
                                 className={`fas ${item.rating >= starValue
-                                    ? "fa-star text-yellow-500"
-                                    : item.rating >= starValue - 0.5
-                                      ? "fa-star-half-alt text-yellow-500"
-                                      : "fa-star text-gray-300"
+                                  ? "fa-star text-yellow-500"
+                                  : item.rating >= starValue - 0.5
+                                    ? "fa-star-half-alt text-yellow-500"
+                                    : "fa-star text-gray-300"
                                   }`}
                               ></i>
                             );
@@ -204,7 +205,7 @@ const Menu = () => {
                         whileTap={{ scale: 0.9 }} // Slightly shrink on click
                         transition={{ type: "spring", stiffness: 200 }}
                         onClick={() => addToCart(item)}
-                        className="bg-green-500 text-white cart-button py-2 px-4 rounded-full mt-4"
+                        className="bg-green-500 text-white cart-button py-2 px-4 ml-10 rounded-full mt-4"
                       >
                         Add to Cart
                       </motion.button>
@@ -213,22 +214,32 @@ const Menu = () => {
                 </div>
               ))}
           </div>
-          {showCart ? (
-            <Cart
-              setBill={setBill}
-              cartItems={cartItems}
-              setCartItems={setCartItems}
-              setShowCart={setShowCart}
-            />
+          {hideCart ? (
+            <button
+              onClick={() => {setHideCart(false);setShowCart(true)}} // Set `hideCart` to false to show the cart
+              className="fixed bottom-10 right-20 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg"
+            >
+              <i className="fas fa-shopping-cart"></i> Cart
+            </button>
           ) : (
-            <Checkout
-              bill={bill}
-              setBill={setBill}
-              cartItems={cartItems}
-              setCartItems={setCartItems}
-              setShowCart={setShowCart}
-            />
-          )}{" "}
+            showCart ? (
+              <Cart
+                setBill={setBill}
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                setShowCart={setShowCart}
+                setHideCart={setHideCart}
+              />
+            ) : (
+              <Checkout
+                bill={bill}
+                setBill={setBill}
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                setShowCart={setShowCart}
+              />
+            )
+          )}
         </div>
       </div>
     </div>
