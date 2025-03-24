@@ -57,7 +57,7 @@ const Menu = () => {
       <div className="menu-container w-11/12  mx-auto mb-20 p-2 md:p-4">
         <div className="flex flex-col md:flex-row w-full justify-between items-center ">
           <div className="mt-4 flex justify-around">
-            <h2 className="text-5xl mb-4 brandname font-bold">
+            <h2 className="text-5xl text-pri brandname font-bold">
               Find The Best Food
             </h2>
           </div>
@@ -73,10 +73,10 @@ const Menu = () => {
           </div>
         </div>
 
-        <div className="mt-6">
-          <div className="flex category-div space-x-4 mt-4">
+        <div className="mt-3">
+          <div className="flex category-div space-x-4 mt-1">
             <button
-              className={`py-2 px-3 mt-2 ml-4 category-title w-max rounded-full ${selectedCategory === "All"
+              className={`py-2 px-3 mt-2  category-title w-max rounded-full ${selectedCategory === "All"
                 ? "bg-green-500 text-white"
                 : "bg-gray-200 text-gray-700"
                 }`}
