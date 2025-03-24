@@ -6,7 +6,7 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   console.log(setShowCart)
   return (
-    <div className="bg-white duration-3000 rounded-3xl  w-full md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg p-6 mt-4 sticky top-20" style={{ height: "fit-content" }}>
+    <div className="bg-white duration-3000 rounded-3xl  w-full md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg overflow-y-scroll p-6 mt-4  top-20 " style={{ height: "fit-content" }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => setShowCart(true)} className="fas fa-arrow-left text-xl"></button>
@@ -20,7 +20,7 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
         <div className="mb-4 p-2 bg-gray-100 rounded-lg">
           <textarea
             className="w-full p-2 bg-gray-100 rounded-lg"
-            placeholder="Enter your shipping address here..."
+            placeholder="Enter your shipping address here"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           ></textarea>
@@ -34,16 +34,16 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
           <input
             type="text"
             className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
-            placeholder="Full Name..."
+            placeholder="Full Name"
           />
           <input
             type="text"
             className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
-            placeholder="Contact Number..."
+            placeholder="Contact Number"
           />
           <input
             type="email"
-            className="w-full mb-1 -2 bg-gray-100 rounded-lg"
+            className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
             placeholder="Email Address"
           />
         </div>
@@ -55,7 +55,7 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
         <div className="mb-4 p-2 bg-gray-100 rounded-lg">
           <textarea
             className="w-full p-2 bg-gray-100 rounded-lg"
-            placeholder="Add instructions or notes for the delivery..."
+            placeholder="Add instructions or notes for the delivery"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           ></textarea>
