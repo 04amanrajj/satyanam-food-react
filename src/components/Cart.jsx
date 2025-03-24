@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-const Cart = ({ setBill, cartItems, setCartItems, setShowCart }) => {
+const Cart = ({ setBill, cartItems, setCartItems, setShowCart,setHideCart }) => {
   const [couponCode, setCouponCode] = useState("");
   const [isCouponApplied, setIsCouponApplied] = useState(false);
   const [showInput, setShowInput] = useState(false); // State to toggle input visibility
-
   // Calculate subtotal, discount, tax, and total dynamically
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -47,8 +46,9 @@ const Cart = ({ setBill, cartItems, setCartItems, setShowCart }) => {
   };
 
   return (
-    <div className="bg-white duration-3000 rounded-3xl  w-full md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg p-6 mt-4 sticky top-20 h-full">
+    <div className="bg-white duration-3000 rounded-3xl  w-5/6 md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg p-6 mt-4 fixed md:sticky top-20 z-10 h-screen">
       <div className="flex justify-between items-center mb-1">
+        <button onClick={() => setHideCart(true)} className="fas fa-times text-xl"></button>
         <h1 className="text-2xl font-bold">Cart</h1>
         <button
           className="text-xl"
