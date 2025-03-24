@@ -10,13 +10,15 @@
   /* Less bright green */
   --secondary-text-color: #333;
 
-  --bg--primary: #ECFDF5;
+  --bg-primary: #b4f9d6;
+  /* ✅ Fixed naming */
   --primary-text-color: #222;
   /* Darker text for better readability */
 }
 
 [data-theme="dark"] {
-  --bg--primary: #207441;
+  --bg-primary: #55a555;
+  /* ✅ Fixed naming */
   --bg-secondary: #3a3a3a;
   /* Slightly lighter gray for better contrast */
   --primary-text-color: #f9f9f9;
@@ -24,26 +26,54 @@
   --bg-accent: #333;
 }
 
-
+/* ✅ Apply primary text color globally */
 html,
 body {
   scroll-behavior: smooth;
   box-sizing: border-box;
-  font-family: ProximaNova, arial, Helvetica Neue, sans-serif;
+  font-family: ProximaNova, Arial, Helvetica Neue, sans-serif;
   padding: 0;
-  transition: background 0.2s linear;
-  background-color: var(--bg--primary) !important;
+  transition: background 0.2s linear, color 0.2s linear;
+  background-color: var(--bg-primary) !important;
+  color: var(--primary-text-color);
+  /* ✅ Applied text color */
   margin: 0;
   box-sizing: border-box;
 }
 
-.bg--primary {
-  background-color: var(--bg--primary) !important;
-
+/* ✅ Background Utility Classes */
+.bg-primary {
+  background-color: var(--bg-primary) !important;
 }
 
 .bg-custom {
-  background-color: var(--bg--primary);
+  background-color: var(--bg-primary);
+}
+
+/* ✅ Text Color Utility Classes */
+.text-pri {
+  color: var(--primary-text-color) !important;
+}
+
+.text-sec {
+  color: var(--secondary-text-color) !important;
+}
+
+.text-accent {
+  color: var(--bg-accent) !important;
+}
+
+/* ✅ Dark Mode Transition */
+[data-theme="dark"] .text-pri {
+  color: var(--primary-text-color) !important;
+}
+
+[data-theme="dark"] .text-sec {
+  color: var(--secondary-text-color) !important;
+}
+
+[data-theme="dark"] .text-accent {
+  color: var(--bg-accent) !important;
 }
 
 Footer {
