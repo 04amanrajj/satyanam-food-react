@@ -10,7 +10,8 @@
 }
 
 body {
-    background-color: var(--bg-secondary) !important;
+    /* background-color: var(--bg-secondary) !important; */
+    background-color: #b4f9d6 !important;
 }
 
 .item-card {
@@ -20,7 +21,6 @@ body {
 }
 
 .item-card:hover {
-    transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -62,6 +62,7 @@ body {
 }
 
 .cart-button:hover {
+    transform: scale(1.05);
     background-color: #218838;
 }
 
