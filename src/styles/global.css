@@ -16,7 +16,7 @@
   /* Darker text for better readability */
 }
 
-[data-theme="dark"] {
+[data-theme=true] {
   --bg-primary: #55a555;
   /* ✅ Fixed naming */
   --bg-secondary: #3a3a3a;
