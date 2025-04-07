@@ -21,7 +21,6 @@ a {
 .browse-menu-button {
   font-size: 26px;
   font-weight: bolder;
-  color: var(--primary-text-color);
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 200px;
