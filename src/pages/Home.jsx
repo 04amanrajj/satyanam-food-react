@@ -4,7 +4,7 @@ import { useRestaurant } from "../contexts/RestaurantContext";
 import { Link } from "react-router-dom";
 import Suggestions from "../components/Suggestions";
 
-const Home = () => {
+const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
     const { restaurant, menu } = useRestaurant();
     const [item, setItems] = React.useState([]);
     const images = React.useMemo(
@@ -29,19 +29,19 @@ const Home = () => {
         }
         fetchData();
     }, [menu]);
-
+    console.log(darkMode)
     return (
-        <div className="main-container bg--primary">
+        <div className="main-container">
             <main className="flex flex-col items-center mt-12 px-6">
                 <div className="text-center">
-                    <h1 className="brandname text-6xl font-bold">
+                    <h1 className="brandname text-6xl text-pri font-bold">
                         {restaurant?.name || "Most Welcome "}
                     </h1>
-                    <p className="text-gray-600 pb-10 mt-4">
+                    <p className="text-gray-600 pb-10 text-pri font-bold mt-4">
                         {restaurant?.tagline || "Enjoy Our Delicious Food!"}
                     </p>
                     <Link
-                        className="browse-menu-button mt-6 px-6 py-3 bg-green-600 text-white rounded-full shadow-lg"
+                        className={`browse-menu-button mt-6 ${darkMode ? "bg-white text-green-600" : "bg-green-600 text-white"} px-6 py-3 rounded-full shadow-lg`}
                         to="/menu"
                     >
                         ORDER NOW
