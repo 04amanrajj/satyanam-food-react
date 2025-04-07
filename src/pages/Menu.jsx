@@ -51,10 +51,10 @@ const Menu = () => {
     .filter((product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase())
     ); // Filter by search query
-
+  console.log(hideCart);
   return (
     <div>
-      <div className="menu-container w-11/12  mx-auto mb-20 p-2 md:p-4">
+      <div className={`menu-container w-11/12 mx-auto mb-20 p-2 md:p-4`}>
         <div className="flex flex-col md:flex-row w-full justify-between items-center ">
           <div className="mt-4 flex justify-around">
             <h2 className="text-5xl text-pri brandname font-bold">
@@ -99,7 +99,7 @@ const Menu = () => {
           </div>
         </div>
         <div className="flex flex-col md:flex-row relative">
-          <div className="grid grid-cols-1 md:w- lg:grid-cols-4 gap-6 mt-6 item-cards w-full relative">
+          <div className="grid grid-cols-1 md:w- lg:grid-cols-4 gap-6 mt-6 item-cards w-full relative" >
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
                 <div
@@ -216,7 +216,7 @@ const Menu = () => {
           </div>
           {hideCart ? (
             <button
-              onClick={() => {setHideCart(false);setShowCart(true)}} // Set `hideCart` to false to show the cart
+              onClick={() => { setHideCart(false); setShowCart(true) }} // Set `hideCart` to false to show the cart
               className="fixed bottom-10 right-20 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg"
             >
               <i className="fas fa-shopping-cart"></i> Cart
