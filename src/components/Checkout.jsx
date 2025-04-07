@@ -1,12 +1,61 @@
 import React, { useState } from "react";
+import OrderPlaced from "./OrderPlaced";
 
 const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
-  console.log(bill)
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("UPI");
-  console.log(setShowCart)
+  const [message, setMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [errors, setErrors] = useState({ name: false, contact: false, email: false, address: false });
+  const [showOrderPlaced, setShowOrderPlaced] = useState(false);
+
+  const handleContinue = () => {
+    if (paymentMethod === "UPI") {
+      setShowOrderPlaced(true);
+    } else {
+      const name = document.getElementById("name").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      const newErrors = {
+        name: !name,
+        contact: !contact || !/^\d{10}$/.test(contact),
+        email: !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+        address: !address.trim(),
+      };
+
+      setErrors(newErrors);
+
+      if (!Object.values(newErrors).some((error) => error)) {
+        setShowOrderPlaced(true);
+      }
+    }
+  };
+
+  if (showOrderPlaced) {
+    return <OrderPlaced />;
+  }
+
+  if (paymentMethod === "UPI") {
+    return (
+      <div className="bg-white rounded-3xl w-11/12 md:w-1/4 sm:w-1/2 ml-0 md:ml-6 shadow-lg p-6 mt-4 fixed md:sticky bottom-3 md:top-20 left-5 md:left-10 z-10 h-4/5 md:h-screen overflow-y-scroll">
+        <h1 className="text-xl font-bold mb-4">Scan QR to Pay</h1>
+        <img
+          src="/path/to/qr-code.png"
+          alt="QR Code"
+          className="w-full h-auto mb-4"
+        />
+        <button
+          onClick={handleContinue}
+          className="bg-yellow-500 mt-4 flex items-center justify-center relative w-full py-3 rounded-3xl text-white font-bold overflow-hidden"
+        >
+          Continue
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white duration-3000 rounded-3xl  w-full md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg overflow-y-scroll p-6 mt-4  top-20 " style={{ height: "fit-content" }}>
+    <div className="bg-white duration-3000 rounded-3xl w-11/12 md:w-1/4 sm:w-1/2 ml-0 md:ml-6 shadow-lg p-6 mt-4 fixed md:sticky bottom-3 md:top-20 left-5 md:left-10 z-10 h-4/5 md:h-screen overflow-y-scroll">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => setShowCart(true)} className="fas fa-arrow-left text-xl"></button>
@@ -17,7 +66,7 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
       {/* Shipping Address */}
       <div>
         <h2 className="text-lg font-semibold mb-4">Shipping address</h2>
-        <div className="mb-4 p-2 bg-gray-100 rounded-lg">
+        <div className={`mb-4 p-2 bg-gray-100 rounded-lg ${errors.address ? "border border-red-500" : ""}`}>
           <textarea
             className="w-full p-2 bg-gray-100 rounded-lg"
             placeholder="Enter your shipping address here"
@@ -32,18 +81,21 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
         <h2 className="text-lg font-semibold mb-4">Contact Details</h2>
         <div className="mb-4 p-2 bg-gray-100 rounded-lg">
           <input
+            id="name"
             type="text"
-            className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
+            className={`w-full mb-1 p-2 bg-gray-100 rounded-lg ${errors.name ? "border border-red-500" : ""}`}
             placeholder="Full Name"
           />
           <input
+            id="contact"
             type="text"
-            className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
+            className={`w-full mb-1 p-2 bg-gray-100 rounded-lg ${errors.contact ? "border border-red-500" : ""}`}
             placeholder="Contact Number"
           />
           <input
+            id="email"
             type="email"
-            className="w-full mb-1 p-2 bg-gray-100 rounded-lg"
+            className={`w-full mb-1 p-2 bg-gray-100 rounded-lg ${errors.email ? "border border-red-500" : ""}`}
             placeholder="Email Address"
           />
         </div>
@@ -56,8 +108,8 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
           <textarea
             className="w-full p-2 bg-gray-100 rounded-lg"
             placeholder="Add instructions or notes for the delivery"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           ></textarea>
         </div>
       </div>
@@ -112,7 +164,10 @@ const Checkout = ({ setBill, bill, cartItems, setCartItems, setShowCart }) => {
       </div>
 
       {/* Checkout Button */}
-      <button className="bg-yellow-500 mt-4 flex items-center justify-center relative w-full py-3 rounded-3xl text-white font-bold overflow-hidden">
+      <button
+        onClick={handleContinue}
+        className="bg-yellow-500 mt-4 flex items-center justify-center relative w-full py-3 rounded-3xl text-white font-bold overflow-hidden"
+      >
         Continue
       </button>
     </div>
