@@ -46,7 +46,7 @@ const Cart = ({ setBill, cartItems, setCartItems, setShowCart,setHideCart }) => 
   };
 
   return (
-    <div className="bg-white duration-3000 rounded-3xl  w-5/6 md:w-1/4 sm:w-1/2 ml-0 md:ml-10 shadow-lg p-6 mt-4 fixed md:sticky top-20 z-10 h-screen">
+    <div className="bg-white duration-3000 rounded-3xl w-11/12 md:w-1/4 sm:w-1/2 ml-0 md:ml-6 shadow-lg p-6 mt-4 fixed md:sticky bottom-2 md:top-20 left-5 md:left-10 z-10 md:h-screen">
       <div className="flex justify-between items-center mb-1">
         <button onClick={() => setHideCart(true)} className="fas fa-times text-xl"></button>
         <h1 className="text-2xl font-bold">Cart</h1>
