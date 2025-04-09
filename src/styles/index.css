@@ -71,7 +71,6 @@ a {
 /* Adjust slide for smaller screens */
 @media (max-width: 768px) {
   .slide {
-    width: 100%;
     height: auto;
     position: relative;
   }
@@ -79,7 +78,6 @@ a {
 
 .feature {
   align-items: center;
-  display: flex;
   justify-content: center;
   margin: auto;
   width: max-content;
