@@ -18,7 +18,7 @@ export default function Navbar({ darkMode, setDarkMode, toggleDarkMode }) {
 
                 {/* Hamburger Button (Mobile) */}
                 <button
-                    className="md:hidden text-2xl text-gray-600"
+                    className="md:hidden text-2xl z-20 text-gray-600"
                     onClick={() => setMenuOpen(!menuOpen)}
                 >
                     ☰
@@ -26,7 +26,7 @@ export default function Navbar({ darkMode, setDarkMode, toggleDarkMode }) {
 
                 {/* Nav Links */}
                 <nav
-                    className={`absolute md:relative ${darkMode ? 'bg-green-800' : 'bg-white'} md:bg-transparent w-full md:w-auto top-16 md:top-0 left-0 p-6 md:p-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "block" : "hidden"
+                    className={`absolute md:relative rounded-full bg-white md:bg-transparent w-full md:w-auto top-13 md:top-0 left-0 p-3 md:p-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "block" : "hidden"
                         } md:flex space-x-6`}
                 >
                     {/* Dark Mode Toggle */}
