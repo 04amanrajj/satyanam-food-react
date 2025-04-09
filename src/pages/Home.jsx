@@ -47,13 +47,13 @@ const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
                         ORDER NOW
                     </Link>
                 </div>
-                <div className="relative mt-12">
+                <div className="relative mt-12 ml-24 md:ml-0">
                     <div
                         id="myCarousel"
                         className="carousel slide"
                         data-bs-ride="carousel"
                     >
-                        <div className="food-img rounded-full shadow-lg carousel-inner cover-page">
+                        <div className="food-img rounded-full carousel-inner cover-page">
                             {images?.map((imgSrc, index) => (
                                 <div
                                     className={`carousel-item ${index === 0 ? "active" : ""}`}
@@ -61,7 +61,7 @@ const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
                                 >
                                     <img
                                         src={item[index]?.image || imgSrc}
-                                        className="rounded-full shadow-lg"
+                                        className="rounded-full"
                                         alt={item[index]?.image || imgSrc}
                                     />
                                 </div>
@@ -97,7 +97,7 @@ const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
                         </button>
                     </div>
 
-                    <div className="feature absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 bg-white rounded-full shadow-lg flex items-center justify-center gap-1 p-2">
+                    <div className="feature md:absolute bottom-0 left-1/2 transform -translate-x-20 md:-translate-x-1/2 translate-y-3 md:translate-y-1/2 bg-white rounded-full shadow-lg items-center justify-center gap-1 p-2 hidden md:flex">
                         {/* First Box */}
                         <div className="box2 box-2 text-center rounded-full pr-6 py-1 pl-1">
                             <img
