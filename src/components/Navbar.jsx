@@ -8,7 +8,7 @@ export default function Navbar({ darkMode, setDarkMode, toggleDarkMode }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className={`navbar p-6 ${darkMode ? 'bg-green-800 text-white' : 'bg-white text-black'} shadow-md`}>
+        <header className={`navbar ${darkMode ? 'bg-green-800 text-white' : 'bg-white text-black'} shadow-md`}>
             <div className="flex justify-between w-full items-center">
                 <div className="brandname text-2xl font-bold text-green-600">
                     <Link to="/">
@@ -26,7 +26,7 @@ export default function Navbar({ darkMode, setDarkMode, toggleDarkMode }) {
 
                 {/* Nav Links */}
                 <nav
-                    className={`absolute md:relative rounded-full bg-white md:bg-transparent w-full md:w-auto top-13 md:top-0 left-0 p-3 md:p-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "block" : "hidden"
+                    className={`absolute md:relative rounded-full bg-white md:bg-transparent w-full md:w-auto p-2.5 md:p-0 top-13 md:top-0 left-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "block" : "hidden"
                         } md:flex space-x-6`}
                 >
                     {/* Dark Mode Toggle */}
