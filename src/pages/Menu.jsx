@@ -202,7 +202,7 @@ const Menu = () => {
                         </div>
                       </div>
                       <motion.button
-                        whileTap={{ scale: 0.9 }} // Slightly shrink on click
+                        whileTap={{ scale: 0.5 }} // Slightly shrink on click
                         transition={{ type: "spring", stiffness: 200 }}
                         onClick={() => addToCart(item)}
                         className="bg-green-500 text-white cart-button py-2 px-4 ml-10 rounded-full mt-4"
