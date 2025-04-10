@@ -74,13 +74,13 @@ const SkeletonLoader = () => (
 const FooterContent = ({ restaurant }) => (
     <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between ">
         {/* Left Side - Restaurant Info */}
-        <div className="text-center md:text-left mb-6 md:mb-0 w-full md:w-auto">
+        <div className="text-left mb-6 md:mb-0 w-full md:w-auto">
             <h1 className="text-2xl font-bold mb-2">{restaurant?.name}</h1>
             <p className="text-gray-600">2025 © All rights reserved</p>
         </div>
 
         {/* Middle Section - Links */}
-        <div className="flex flex-row md:flex-row justify-center md:justify-between w-full md:w-auto">
+        <div className="flex flex-col md:flex-row justify-center md:justify-between w-full md:w-auto">
             {[
                 { title: "Company", links: ["About", "FAQ"] },
                 { title: "Service", links: ["Delivery", "Payment", "Contacts"] },
