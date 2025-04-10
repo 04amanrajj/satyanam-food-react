@@ -18,7 +18,7 @@ const Suggestions = ({ dishes }) => {
   };
   const limitedDishes = [...dishes.slice(0, 4), ...dishes.slice(19, 23)];
   return (
-    <div className="suggestion p-6">
+    <div className="suggestion p-6 hidden md:block">
       <div className="container w-100 shadow-md mx-auto mb-20 p-20">
         <h1 className="text-4xl bg-white w-max p-4 rounded-full font-bold mb-6">
           Popular Dishes
