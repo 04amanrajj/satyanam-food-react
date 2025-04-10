@@ -47,7 +47,7 @@ const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
                         ORDER NOW
                     </Link>
                 </div>
-                <div className="relative mt-12 ml-24 md:ml-0">
+                <div className="relative mt-12 w-2/3 md:w-1/2 lg:w-1/5">
                     <div
                         id="myCarousel"
                         className="carousel slide"
