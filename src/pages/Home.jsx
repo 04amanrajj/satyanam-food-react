@@ -1,8 +1,8 @@
 import React from "react";
 import { menuData } from "../services/service";
 import { useRestaurant } from "../contexts/RestaurantContext";
-import { Link } from "react-router-dom";
 import Suggestions from "../components/Suggestions";
+import MenuButton from "../components/ui/MenuButton";
 
 const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
     const { restaurant, menu } = useRestaurant();
@@ -40,12 +40,7 @@ const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
                     <p className="text-gray-600 pb-10 text-pri font-bold mt-4">
                         {restaurant?.tagline || "Enjoy Our Delicious Food!"}
                     </p>
-                    <Link
-                        className={`browse-menu-button mt-6 ${darkMode ? "bg-white text-green-600" : "bg-green-600 text-white"} px-6 py-3 rounded-full shadow-lg`}
-                        to="/menu"
-                    >
-                        ORDER NOW
-                    </Link>
+                    <MenuButton />
                 </div>
                 <div className="relative mt-12 w-2/3 md:w-1/2 lg:w-1/5">
                     <div
