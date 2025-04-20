@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import NotFound from "./pages/notfound";
 import './styles/global.css';
 import { useEffect, useState } from "react";
+import Switch from "./components/ui/Switch"; // Import Switch component
 
 function App() {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode") || false);
@@ -37,6 +38,7 @@ function App() {
           <Route path="*" element={<NotFound darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
         </Routes>
       </Router>
+      <Switch />
       <Footer />
     </RestaurantProvider>
   );
