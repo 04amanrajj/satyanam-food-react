@@ -1,81 +1,129 @@
-@import url('https://fonts.googleapis.com/css2?family=Merienda+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merienda+One&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary-color: 102, 51, 204;
-  /* Slightly deeper purple */
+  /* Color Palette - Light Mode (Warm Canvas & Rich Brand Tones) */
+  --bg-canvas: #faf9f6;         /* Creamy warm white */
+  --bg-surface: #ffffff;        /* Pure card white */
+  --color-primary: #1e533c;     /* Deep rich Emerald Green */
+  --color-secondary: #e67e22;   /* Warm Saffron Orange / Terracotta */
+  --color-accent: #f39c12;      /* Saffron Gold */
+  
+  --primary-text-color: #0f172a;    /* Slate 900 */
+  --secondary-text-color: #475569;  /* Slate 600 */
+  --border-color: #e2e8f0;          /* Slate 200 */
+  
+  /* System Compatibility Fallbacks */
+  --bg-primary: var(--bg-canvas);
+  --bg-secondary: var(--color-primary);
+  --bg-accent: var(--color-accent);
 
-  --bg-accent: #aaa;
-  /* Softer gray for light mode */
-  --bg-secondary: #4eb179;
-  /* Less bright green */
-  --secondary-text-color: #333;
-
-  --bg-primary: #b4f9d6;
-  /* ✅ Fixed naming */
-  --primary-text-color: #222;
-  /* Darker text for better readability */
+  /* Shadows and Transitions */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --shadow-premium: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
 }
 
 [data-theme=true] {
-  --bg-primary: #55a555;
-  /* ✅ Fixed naming */
-  --bg-secondary: #3a3a3a;
-  /* Slightly lighter gray for better contrast */
-  --primary-text-color: #f9f9f9;
-  --secondary-text-color: white;
-  --bg-accent: #333;
+  /* Color Palette - Dark Mode (Rich Slate & Glowing Accents) */
+  --bg-canvas: #0b0f19;         /* Dark midnight blue */
+  --bg-surface: #111827;        /* Slate dark surface card */
+  --color-primary: #2ecc71;     /* Vibrant Emerald Green */
+  --color-secondary: #e67e22;   /* Saffron Orange */
+  --color-accent: #f1c40f;      /* Glowing saffron gold */
+  
+  --primary-text-color: #f8fafc;    /* Slate 50 */
+  --secondary-text-color: #94a3b8;  /* Slate 400 */
+  --border-color: #1f2937;          /* Slate 800 */
+  
+  /* System Compatibility Fallbacks */
+  --bg-primary: var(--bg-canvas);
+  --bg-secondary: var(--color-primary);
+  --bg-accent: var(--color-accent);
 }
 
-/* ✅ Apply primary text color globally */
+/* Base resets & layout */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 html,
 body {
   scroll-behavior: smooth;
-  box-sizing: border-box;
-  font-family: ProximaNova, Arial, Helvetica Neue, sans-serif;
-  padding: 0;
-  transition: background 0.2s linear, color 0.2s linear;
-  background-color: var(--bg-primary) !important;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-canvas) !important;
   color: var(--primary-text-color);
-  /* ✅ Applied text color */
-  margin: 0;
-  box-sizing: border-box;
+  transition: var(--transition-smooth);
 }
 
-/* ✅ Background Utility Classes */
-.bg-primary {
-  background-color: var(--bg-primary) !important;
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--primary-text-color);
 }
 
-.bg-custom {
-  background-color: var(--bg-primary);
+/* Merienda logo accent style */
+.brand-font {
+  font-family: 'Merienda One', cursive;
 }
 
-/* ✅ Text Color Utility Classes */
-.text-pri {
-  color: var(--primary-text-color) !important;
+/* Utility background classes */
+.bg-canvas { background-color: var(--bg-canvas) !important; }
+.bg-surface { background-color: var(--bg-surface) !important; }
+.bg-primary { background-color: var(--bg-primary) !important; }
+.bg-custom { background-color: var(--bg-canvas); }
+
+/* Utility text color classes */
+.text-pri { color: var(--primary-text-color) !important; }
+.text-sec { color: var(--secondary-text-color) !important; }
+.text-accent { color: var(--color-accent) !important; }
+.text-primary-brand { color: var(--color-primary) !important; }
+
+/* Custom scrollbars for a premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-text-color);
 }
 
-.text-sec {
-  color: var(--secondary-text-color) !important;
+/* Premium micro-interaction helpers */
+.glassmorphic {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.text-accent {
-  color: var(--bg-accent) !important;
+[data-theme=true] .glassmorphic {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* ✅ Dark Mode Transition */
-[data-theme="dark"] .text-pri {
-  color: var(--primary-text-color) !important;
+.hover-glow {
+  transition: var(--transition-smooth);
+}
+.hover-glow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(30, 83, 60, 0.2);
 }
 
-[data-theme="dark"] .text-sec {
-  color: var(--secondary-text-color) !important;
-}
-
-[data-theme="dark"] .text-accent {
-  color: var(--bg-accent) !important;
-}
-
-Footer {
-  padding: 10px !important;
+[data-theme=true] .hover-glow:hover {
+  box-shadow: 0 10px 25px -5px rgba(46, 204, 113, 0.15);
 }
