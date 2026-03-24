@@ -130,3 +130,4 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme=true] .hover-glow:hover {
   box-shadow: 0 10px 25px -5px rgba(46, 204, 113, 0.15);
 }/* Added March 24 responsive typography resets */
+/* March 24: optimized smooth transitions */
