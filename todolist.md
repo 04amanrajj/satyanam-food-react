@@ -12,3 +12,4 @@
 - filter & search
 - pages: home,about,login
 - components: navbar,footer
+- March 24: typography token setup
