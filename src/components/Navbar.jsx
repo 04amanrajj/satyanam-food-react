@@ -1,54 +1,95 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import "../styles/navbar.css";
 
-export default function Navbar({ darkMode, setDarkMode, toggleDarkMode }) {
-    const { restaurant } = useRestaurant();
+export default function Navbar({ darkMode, toggleDarkMode }) {
+    const { restaurant, cart } = useRestaurant();
     const [menuOpen, setMenuOpen] = useState(false);
 
-    return (
-        <header className={`navbar ${darkMode ? 'bg-green-800 text-white' : 'bg-white text-black'} shadow-md`}>
-            <div className="flex justify-between w-full items-center">
-                <div className="brandname text-2xl font-bold text-green-600">
-                    <Link to="/">
-                        <h1 className="text-lg md:text-xl">{restaurant?.name || "Restaurant"}</h1>
-                    </Link>
-                </div>
+    // Calculate total quantity of items in the cart
+    const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
 
-                {/* Hamburger Button (Mobile) */}
-                <button
-                    className="md:hidden text-2xl z-20 text-gray-600"
+    return (
+        <header className="navbar-header">
+            <div className="navbar-container">
+                {/* Logo and Brand Name */}
+                <Link to="/" className="brand-link">
+                    <span className="brand-title brand-font">
+                        {restaurant?.name || "SatyaNaam Food"}
+                    </span>
+                    <span className="brand-dot"></span>
+                </Link>
+
+                {/* Hamburger (Mobile Toggle) */}
+                <button 
+                    className="hamburger-btn" 
                     onClick={() => setMenuOpen(!menuOpen)}
+                    aria-label="Toggle navigation menu"
                 >
-                    ☰
+                    {menuOpen ? "✕" : "☰"}
                 </button>
 
-                {/* Nav Links */}
-                <nav
-                    className={`absolute md:relative rounded-full bg-white md:bg-transparent w-full md:w-auto p-2.5 md:p-0 top-13 md:top-0 left-0 shadow-md md:shadow-none transition-all duration-300 ease-in-out ${menuOpen ? "block" : "hidden"
-                        } md:flex space-x-6`}
-                >
-                    {/* Dark Mode Toggle */}
-                    <div className="one-quarter" id="switch">
-                        <input
-                            type="checkbox"
-                            className="checkbox toggle-theme"
-                            id="chk"
-                            checked={darkMode}
-                            onChange={toggleDarkMode}
-                        />
-                        {/*                         
-                        <label className="label " htmlFor="chk">
-                            <div className="ball" style={{ backgroundColor: darkMode ? 'text-gray-600' : 'bg-white', transform: darkMode ? "translateX(3px)" : "translateX(-18px)" }}></div>
-                            <i className="fas fa-moon"></i>
-                            <i className="fas fa-sun"></i>
-                        </label> */}
+                {/* Nav Menu Links & Buttons */}
+                <nav className={`nav-menu ${menuOpen ? "open" : ""}`}>
+                    <NavLink 
+                        to="/" 
+                        className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Home
+                    </NavLink>
+                    <NavLink 
+                        to="/menu" 
+                        className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Menu
+                    </NavLink>
+                    <NavLink 
+                        to="/about" 
+                        className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        About Us
+                    </NavLink>
+                    <NavLink 
+                        to="/user" 
+                        className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Profile
+                    </NavLink>
+
+                    {/* Interactive Theme Toggle Button */}
+                    <div className="theme-toggle-wrapper">
+                        <button 
+                            onClick={toggleDarkMode} 
+                            className="theme-toggle-btn"
+                            aria-label="Toggle theme mode"
+                            title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                        >
+                            {darkMode ? (
+                                <i className="fas fa-sun" style={{ color: "#f39c12" }}></i>
+                            ) : (
+                                <i className="fas fa-moon" style={{ color: "#f1c40f" }}></i>
+                            )}
+                        </button>
                     </div>
-                    <Link className="text-black font-semibold" to="/">Home</Link>
-                    <Link className="text-gray-600" to="/menu">Menu</Link>
-                    <Link className="text-gray-600" to="/about">About Us</Link>
-                    <Link className="text-gray-600" to="/user">Sign Up</Link>
+
+                    {/* Cart Trigger Bubble */}
+                    <Link 
+                        to="/checkout" 
+                        className="cart-bubble-btn"
+                        onClick={() => setMenuOpen(false)}
+                        aria-label="View shopping cart"
+                        title="Shopping Cart"
+                    >
+                        <i className="fas fa-shopping-basket"></i>
+                        {cartCount > 0 && (
+                            <span className="cart-badge">{cartCount}</span>
+                        )}
+                    </Link>
                 </nav>
             </div>
         </header>
