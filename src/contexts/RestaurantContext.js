@@ -35,6 +35,49 @@ export const RestaurantProvider = ({ children }) => {
         setOpen(false); // Close Snackbar
     };
 
+    const [cart, setCart] = useState([]);
+
+    // Load cart on startup
+    useEffect(() => {
+        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+        setCart(storedCart);
+    }, []);
+
+    // Sync cart to localStorage whenever it changes
+    const syncCart = (updatedCart) => {
+        setCart(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
+
+    const addToCart = (item) => {
+        const existing = cart.find(i => i.id === item.id);
+        let updated;
+        if (existing) {
+            updated = cart.map(i => i.id === item.id ? { ...i, quantity: (i.quantity || 1) + 1 } : i);
+        } else {
+            updated = [...cart, { ...item, quantity: 1 }];
+        }
+        syncCart(updated);
+    };
+
+    const removeFromCart = (itemId) => {
+        const updated = cart.filter(i => i.id !== itemId);
+        syncCart(updated);
+    };
+
+    const updateQuantity = (itemId, newQty) => {
+        if (newQty <= 0) {
+            removeFromCart(itemId);
+            return;
+        }
+        const updated = cart.map(i => i.id === itemId ? { ...i, quantity: newQty } : i);
+        syncCart(updated);
+    };
+
+    const clearCart = () => {
+        syncCart([]);
+    };
+
     return (
         <>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -42,7 +85,15 @@ export const RestaurantProvider = ({ children }) => {
                     {error}
                 </Alert>
             </Snackbar>
-            <RestaurantContext.Provider value={{ restaurant, menu }}>
+            <RestaurantContext.Provider value={{ 
+                restaurant, 
+                menu, 
+                cart, 
+                addToCart, 
+                removeFromCart, 
+                updateQuantity, 
+                clearCart 
+            }}>
                 {children}
             </RestaurantContext.Provider>
         </>
