@@ -14,3 +14,4 @@
 - components: navbar,footer
 - March 24: typography token setup
 - March 26: navbar mobile drawer
+- March 28: shopping cart quantity reducer
