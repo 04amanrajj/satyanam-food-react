@@ -16,3 +16,4 @@
 - March 26: navbar mobile drawer
 - March 28: shopping cart quantity reducer
 - March 28: central cart provider checks
+- March 31: Suggestions component layout structured
