@@ -1,84 +1,123 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Skeleton } from "@mui/material";
+import { Skeleton, Snackbar, Alert } from "@mui/material";
+import { useRestaurant } from "../contexts/RestaurantContext";
 
-const Suggestions = ({ dishes }) => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+export default function Suggestions({ dishes }) {
+    const { addToCart } = useRestaurant();
+    const [loading, setLoading] = useState(true);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [addedDishName, setAddedDishName] = useState("");
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000); // Simulate loading delay
-    return () => clearTimeout(timer);
-  }, []);
+    // Simulate standard skeleton screen load
+    useEffect(() => {
+        const timer = setTimeout(() => setLoading(false), 1200);
+        return () => clearTimeout(timer);
+    }, []);
 
-  const handleAddToCart = (dish) => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    localStorage.setItem("cart", JSON.stringify([...cart, dish]));
-    navigate("/menu");
-  };
-  const limitedDishes = [...dishes.slice(0, 4), ...dishes.slice(19, 23)];
-  return (
-    <div className="suggestion p-6 hidden md:block">
-      <div className="container w-100 shadow-md mx-auto mb-20 p-20">
-        <h1 className="text-4xl bg-white w-max p-4 rounded-full font-bold mb-6">
-          Popular Dishes
-        </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
-          {loading
-            ? Array.from({ length: 8 }).map((_, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-3xl shadow-md p-none w-64"
-              >
-                <Skeleton className="rounded-t-3xl" variant="rectangular" width={256} height={160} />
-                <div className="p-2">
-                  <Skeleton variant="text" width="80%" />
-                  <Skeleton variant="text" width="20%" />
-                  <Skeleton className="rounded-b-3xl" variant="rectangular" width="100%" height={40} />
-                </div>
-              </div>
-            ))
-            : limitedDishes.map((dish, index) => (
-              <div
-                key={index}
-                className="card bg-white rounded-lg shadow-md p-none w-full relative"
-              >
-                <img
-                  alt={dish.name}
-                  className="rounded-t-lg w-full h-40 object-cover"
-                  height="256"
-                  src={dish.image}
-                  width="256"
-                />
-                <div className="details">
-                  <h3 className="text-gray-800 font-semibold text-lg">
-                    {dish.name}
-                  </h3>
-                  <div className="flex m-0 items-center justify-between">
-                    <span className="text-green-600 font-bold text-xl">
-                      Rs.{dish.price}
-                    </span>
-                    <span className="text-green-600 flex items-center">
-                      <i
-                        className={`fas fa-circle text-xs mr-1 ${dish.isVeg ? "text-green-600" : "text-green-600"
-                          }`}
-                      ></i>
-                      {dish.isVeg ? "Veg" : "Veg"}
-                    </span>
-                  </div>
-                  <button
-                    className="cart-btn mt-4 w-full bg-green-100 text-green-600 py-2 rounded-lg"
-                    onClick={() => handleAddToCart(dish)}
-                  >
-                    <i className="fas fa-shopping-cart"></i> Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+    const handleAddToCartClick = (dish) => {
+        addToCart(dish);
+        setAddedDishName(dish.name);
+        setSnackbarOpen(true);
+    };
 
-export default Suggestions;
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbarOpen(false);
+    };
+
+    // Safely retrieve first 8 popular items for display
+    const popularDishes = dishes && dishes.length > 0 
+        ? [...dishes.slice(0, 4), ...dishes.slice(10, 14)]
+        : [];
+
+    return (
+        <section className="suggestion-section">
+            <div className="suggestion-header">
+                <h2 className="section-title">Popular Dishes</h2>
+                <span className="text-sec" style={{ fontSize: "0.95rem", fontWeight: "500" }}>
+                    Prepared Fresh Daily
+                </span>
+            </div>
+
+            <div className="dishes-grid">
+                {loading || popularDishes.length === 0 ? (
+                    // Premium Skeleton Card Screen
+                    Array.from({ length: 8 }).map((_, index) => (
+                        <div key={index} className="skeleton-card">
+                            <Skeleton 
+                                variant="rectangular" 
+                                width="100%" 
+                                height={200} 
+                                style={{ borderRadius: "var(--radius-md)", marginBottom: "16px" }}
+                            />
+                            <Skeleton variant="text" width="60%" height={24} style={{ marginBottom: "8px" }} />
+                            <Skeleton variant="text" width="30%" height={20} style={{ marginBottom: "20px" }} />
+                            <Skeleton variant="rectangular" width="100%" height={42} style={{ borderRadius: "var(--radius-md)" }} />
+                        </div>
+                    ))
+                ) : (
+                    // Render aesthetic cards
+                    popularDishes.map((dish, index) => (
+                        <article key={index} className="food-card">
+                            <div className="food-card-img-wrapper">
+                                <img 
+                                    src={dish.image || "/coverpage/img1.jpeg"} 
+                                    alt={dish.name} 
+                                    className="food-card-img"
+                                    loading="lazy"
+                                />
+                                <span className="food-badge-overlay badge-veg">
+                                    <i className="fas fa-leaf" style={{ marginRight: "4px" }}></i>
+                                    Pure Veg
+                                </span>
+                            </div>
+
+                            <div className="food-card-body">
+                                <h3 className="food-card-title">{dish.name}</h3>
+                                
+                                <div className="food-card-price-row">
+                                    <span className="food-card-price">₹{dish.price}</span>
+                                    <div className="food-card-rating">
+                                        <i className="fas fa-star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    className="food-card-btn"
+                                    onClick={() => handleAddToCartClick(dish)}
+                                    aria-label={`Add ${dish.name} to cart`}
+                                >
+                                    <i className="fas fa-shopping-basket"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </article>
+                    ))
+                )}
+            </div>
+
+            {/* Premium feedback toast notification */}
+            <Snackbar 
+                open={snackbarOpen} 
+                autoHideDuration={2000} 
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert 
+                    onClose={handleCloseSnackbar} 
+                    severity="success" 
+                    sx={{ 
+                        width: '100%', 
+                        borderRadius: "var(--radius-md)", 
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: "600",
+                        boxShadow: "var(--shadow-lg)"
+                    }}
+                >
+                    🎉 {addedDishName} added to cart!
+                </Alert>
+            </Snackbar>
+        </section>
+    );
+}

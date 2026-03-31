@@ -1,148 +1,114 @@
-import React from "react";
-import { menuData } from "../services/service";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import Suggestions from "../components/Suggestions";
-import MenuButton from "../components/ui/MenuButton";
 
-const Home = ({ darkMode, setDarkMode, toggleDarkMode }) => {
+export default function Home() {
     const { restaurant, menu } = useRestaurant();
-    const [item, setItems] = React.useState([]);
-    const images = React.useMemo(
-        () => [
-            "/coverpage/img1.jpeg",
-            "/coverpage/img2.jpeg",
-            "/coverpage/img3.jpeg",
-            "/coverpage/img4.jpeg",
-        ],
-        []
-    );
+    const [previewItems, setPreviewItems] = useState({
+        thali: "/coverpage/img2.jpeg",
+        chole: "/coverpage/img1.jpeg",
+        paneer: "/coverpage/img3.jpeg"
+    });
 
-    React.useEffect(() => {
-        async function fetchData() {
-            try {
-                const menuItems = await menuData();
-                setItems(menuItems);
-            } catch (error) {
-                setItems(menu);
-                console.error(`Error fetching menu data: ${error.message}`);
-            }
+    // Dynamically retrieve real menu images for hero previews once menu loads
+    useEffect(() => {
+        if (menu && menu.length > 0) {
+            const choleItem = menu.find(item => item.name?.toLowerCase().includes("chole") || item.id === 1);
+            const paneerItem = menu.find(item => item.name?.toLowerCase().includes("paneer") || item.id === 2);
+            const thaliItem = menu.find(item => item.name?.toLowerCase().includes("thali") || item.id === 3);
+
+            setPreviewItems({
+                thali: thaliItem?.image || "/coverpage/img2.jpeg",
+                chole: choleItem?.image || "/coverpage/img1.jpeg",
+                paneer: paneerItem?.image || "/coverpage/img3.jpeg"
+            });
         }
-        fetchData();
     }, [menu]);
-    console.log(darkMode)
+
     return (
         <div className="main-container">
-            <main className="flex flex-col items-center mt-12 px-6">
-                <div className="text-center">
-                    <h1 className="brandname text-6xl text-pri font-bold">
-                        {restaurant?.name || "Most Welcome "}
+            {/* Immersive Hero Grid Section */}
+            <section className="hero-section">
+                <div className="hero-content">
+                    <span className="hero-subtitle">
+                        {restaurant?.tagline || "Authentic taste of tradition"}
+                    </span>
+                    <h1 className="hero-title">
+                        Welcome to <br />
+                        <span>{restaurant?.name || "SatyaNaam Food"}</span>
                     </h1>
-                    <p className="text-gray-600 pb-10 text-pri font-bold mt-4">
-                        {restaurant?.tagline || "Enjoy Our Delicious Food!"}
+                    <p className="hero-description">
+                        Indulge in a premium, hand-crafted culinary journey featuring pure, traditional Indian flavors, freshly prepared with authentic spices and love.
                     </p>
-                    <MenuButton />
+                    <Link to="/menu" className="btn-primary hover-glow" style={{
+                        backgroundColor: "var(--color-primary)",
+                        color: "white",
+                        padding: "16px 36px",
+                        borderRadius: "var(--radius-md)",
+                        fontWeight: "700",
+                        fontSize: "1.05rem",
+                        display: "inline-block",
+                        textDecoration: "none",
+                        boxShadow: "0 10px 20px -5px rgba(30, 83, 60, 0.3)",
+                        transition: "var(--transition-smooth)"
+                    }}>
+                        Explore Menu &nbsp; <i className="fas fa-arrow-right"></i>
+                    </Link>
                 </div>
-                <div className="relative mt-12 w-2/3 md:w-1/2 lg:w-1/5">
-                    <div
-                        id="myCarousel"
-                        className="carousel slide"
-                        data-bs-ride="carousel"
-                    >
-                        <div className="food-img rounded-full carousel-inner cover-page">
-                            {images?.map((imgSrc, index) => (
-                                <div
-                                    className={`carousel-item ${index === 0 ? "active" : ""}`}
-                                    key={index}
-                                >
-                                    <img
-                                        src={item[index]?.image || imgSrc}
-                                        className="rounded-full"
-                                        alt={item[index]?.image || imgSrc}
-                                    />
-                                </div>
-                            ))}
-                        </div>
 
-                        <button
-                            className="carousel-control-prev"
-                            type="button"
-                            data-bs-target="#myCarousel"
-                            data-bs-slide="prev"
-                            style={{ opacity: 0 }}
-                        >
-                            <span
-                                className="carousel-control-prev-icon"
-                                aria-hidden="true"
-                            ></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-
-                        <button
-                            className="carousel-control-next"
-                            type="button"
-                            data-bs-target="#myCarousel"
-                            data-bs-slide="next"
-                            style={{ opacity: 0 }}
-                        >
-                            <span
-                                className="carousel-control-next-icon"
-                                aria-hidden="true"
-                            ></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
+                <div className="hero-visuals">
+                    {/* Floating Thali Image */}
+                    <div className="thali-container">
+                        <img 
+                            src={previewItems.thali} 
+                            alt="Traditional Indian Thali Feast" 
+                            className="thali-img"
+                        />
                     </div>
 
-                    <div className="feature md:absolute bottom-0 left-1/2 transform -translate-x-20 md:-translate-x-1/2 translate-y-3 md:translate-y-1/2 bg-white rounded-full shadow-lg items-center justify-center gap-1 p-2 hidden md:flex">
-                        {/* First Box */}
-                        <div className="box2 box-2 text-center rounded-full pr-6 py-1 pl-1">
-                            <img
-                                src={item[30]?.image || images[1]}
-                                alt="Food"
-                                className="food-img1 rounded-full"
-                                width="100"
-                                height="100"
-                            />
-                            <div>
-                                <p className="mt-2 font-semibold text-gray-800">
-                                    {item[30]?.name || "Delicious Item"}
-                                </p>
-                                <p className="flex justify-center text-yellow-500 mt-1">
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                </p>
+                    {/* Floating Overlay Card 1 */}
+                    <div className="floating-preview-card card-top-left glassmorphic">
+                        <img 
+                            src={previewItems.chole} 
+                            alt="Chole Masala" 
+                            className="preview-thumb"
+                        />
+                        <div>
+                            <h4 className="preview-title">Chole Masala</h4>
+                            <div className="preview-rating">
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Second Box */}
-                        <div className="box2 box-3 pr-6 py-1 pl-1 text-center rounded-full">
-                            <img
-                                src={item[20]?.image || images[1]}
-                                alt="Food"
-                                className="food-img1 rounded-full"
-                                width="100"
-                                height="100"
-                            />
-                            <div>
-                                <p className="mt-2 font-semibold text-gray-800">
-                                    {item[20]?.name || "Tasty Dish"}
-                                </p>
-                                <p className="flex justify-center text-yellow-500 mt-1">
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                    <i className="fas fa-star"></i>
-                                </p>
+                    {/* Floating Overlay Card 2 */}
+                    <div className="floating-preview-card card-bottom-right glassmorphic">
+                        <img 
+                            src={previewItems.paneer} 
+                            alt="Shahi Paneer" 
+                            className="preview-thumb"
+                        />
+                        <div>
+                            <h4 className="preview-title">Shahi Paneer</h4>
+                            <div className="preview-rating">
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
+                                <i className="fas fa-star"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
-            <Suggestions dishes={item} />
+            </section>
+
+            {/* Popular Dishes suggestions section */}
+            <Suggestions dishes={menu} />
         </div>
     );
-};
-export default Home;
+}
