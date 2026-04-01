@@ -17,3 +17,4 @@
 - March 28: shopping cart quantity reducer
 - March 28: central cart provider checks
 - March 31: Suggestions component layout structured
+- April 1: 2-column mobile card grids validated
