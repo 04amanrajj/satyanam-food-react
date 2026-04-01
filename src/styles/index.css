@@ -325,8 +325,10 @@
   .hero-section {
     flex-direction: column;
     text-align: center;
-    margin-top: 40px;
-    gap: 50px;
+    margin-top: 24px;
+    gap: 32px;
+    width: 92%;
+    min-height: auto;
   }
 
   .hero-content {
@@ -335,21 +337,114 @@
   }
 
   .hero-title {
-    font-size: 2.8rem;
+    font-size: 2.5rem;
+  }
+
+  .hero-visuals {
+    height: 400px;
+    width: 100%;
+    margin-bottom: 24px;
   }
 }
 
 @media (max-width: 576px) {
-  .thali-container {
-    width: 280px;
-    height: 280px;
-  }
-
-  .floating-preview-card {
-    display: none; /* Hide floating badges on very small phones to avoid overflow */
+  .hero-section {
+    margin-top: 16px;
+    gap: 24px;
   }
 
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .hero-visuals {
+    height: 300px;
+    margin-bottom: 40px;
+  }
+
+  .thali-container {
+    width: 250px;
+    height: 250px;
+    border-width: 4px;
+  }
+
+  .floating-preview-card {
+    display: none; /* Hide floating badges on small mobile screens to keep it clean */
+  }
+
+  /* Compact 2-Column Grid on Mobile Screens */
+  .suggestion-section {
+    margin: 40px auto;
+    width: 92%;
+  }
+
+  .suggestion-header {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .dishes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .food-card {
+    border-radius: var(--radius-md);
+  }
+
+  .food-card-img-wrapper {
+    height: 110px;
+  }
+
+  .food-badge-overlay {
+    font-size: 0.6rem;
+    padding: 3px 6px;
+    top: 8px;
+    left: 8px;
+  }
+
+  .food-card-body {
+    padding: 10px;
+  }
+
+  .food-card-title {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .food-card-price-row {
+    margin-bottom: 10px;
+  }
+
+  .food-card-price {
+    font-size: 0.95rem;
+  }
+
+  .food-card-rating {
+    font-size: 0.75rem;
+    gap: 2px;
+  }
+
+  .food-card-btn {
+    padding: 8px;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .skeleton-card {
+    padding: 10px;
+    border-radius: var(--radius-md);
   }
 }
