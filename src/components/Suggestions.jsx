@@ -56,9 +56,44 @@ export default function Suggestions({ dishes }) {
                         </div>
                     ))
                 ) : (
-                    // Render aesthetic cards
+                    // Render aesthetic responsive cards
                     popularDishes.map((dish, index) => (
                         <article key={index} className="food-card">
+                            {/* Left/Main Details Area */}
+                            <div className="food-card-details">
+                                <div className="food-card-title-row">
+                                    <h3 className="food-card-title">{dish.name}</h3>
+                                    <span className="food-card-rating-badge">
+                                        <i className="fas fa-star"></i>
+                                        <span>{dish.rating || "4.8"}</span>
+                                    </span>
+                                </div>
+
+                                {/* Ingredient list display - split beautifully */}
+                                <p className="food-card-desc">
+                                    {dish.description ? dish.description.split(" + ").join(", ") : "Freshly prepared with pure, traditional ingredients"}
+                                </p>
+                                
+                                <div className="food-card-pricing-row">
+                                    <div className="pricing-top">
+                                        <span className="original-price">₹{Math.round(dish.price * 1.25)}</span>
+                                        <span className="discount-badge">20% OFF</span>
+                                    </div>
+                                    <span className="final-price">₹{dish.price}</span>
+                                </div>
+
+                                {/* Desktop-only primary action button */}
+                                <button 
+                                    className="food-card-btn desktop-only-btn"
+                                    onClick={() => handleAddToCartClick(dish)}
+                                    aria-label={`Add ${dish.name} to cart`}
+                                >
+                                    <i className="fas fa-shopping-basket"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+
+                            {/* Right/Top Image Area */}
                             <div className="food-card-img-wrapper">
                                 <img 
                                     src={dish.image || "/coverpage/img1.jpeg"} 
@@ -66,30 +101,18 @@ export default function Suggestions({ dishes }) {
                                     className="food-card-img"
                                     loading="lazy"
                                 />
-                                <span className="food-badge-overlay badge-veg">
+                                <span className="food-badge-overlay badge-veg desktop-only-badge">
                                     <i className="fas fa-leaf" style={{ marginRight: "4px" }}></i>
                                     Pure Veg
                                 </span>
-                            </div>
 
-                            <div className="food-card-body">
-                                <h3 className="food-card-title">{dish.name}</h3>
-                                
-                                <div className="food-card-price-row">
-                                    <span className="food-card-price">₹{dish.price}</span>
-                                    <div className="food-card-rating">
-                                        <i className="fas fa-star"></i>
-                                        <span>4.9</span>
-                                    </div>
-                                </div>
-
+                                {/* Mobile-only floating cart button */}
                                 <button 
-                                    className="food-card-btn"
+                                    className="food-card-floating-btn mobile-only-btn"
                                     onClick={() => handleAddToCartClick(dish)}
                                     aria-label={`Add ${dish.name} to cart`}
                                 >
-                                    <i className="fas fa-shopping-basket"></i>
-                                    Add to Cart
+                                    <i className="fas fa-cart-plus"></i>
                                 </button>
                             </div>
                         </article>

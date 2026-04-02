@@ -192,10 +192,91 @@
   border-color: rgba(30, 83, 60, 0.15);
 }
 
+/* Card details (Desktop default) */
+.food-card-details {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.food-card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.food-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+  margin: 0;
+}
+
+.food-card-rating-badge {
+  background-color: rgba(241, 196, 15, 0.15);
+  color: #f39c12;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Hide descriptions and original price details on desktop suggestions card for a super clean grid */
+.food-card-desc {
+  display: none;
+}
+
+.pricing-top {
+  display: none;
+}
+
+.food-card-pricing-row {
+  margin-top: auto;
+  margin-bottom: 18px;
+}
+
+.final-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.food-card-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background-color: var(--bg-canvas);
+  color: var(--color-primary);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+  border: 1px solid var(--border-color);
+}
+
+.food-card:hover .food-card-btn {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(30, 83, 60, 0.25);
+}
+
+/* Image wrapper (Desktop default) */
 .food-card-img-wrapper {
   position: relative;
   height: 200px;
   overflow: hidden;
+  order: -1; /* Display image on top of details */
 }
 
 .food-card-img {
@@ -228,71 +309,17 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.badge-nonveg {
-  background-color: rgba(192, 57, 43, 0.9);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* Desktop vs Mobile display helpers */
+.mobile-only-btn {
+  display: none !important;
 }
 
-.food-card-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+.desktop-only-btn {
+  display: flex !important;
 }
 
-.food-card-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--primary-text-color);
-  margin-bottom: 8px;
-}
-
-.food-card-price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-  margin-top: auto;
-}
-
-.food-card-price {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--color-primary);
-}
-
-.food-card-rating {
-  font-size: 0.85rem;
-  color: #f1c40f;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.food-card-btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  background-color: var(--bg-canvas);
-  color: var(--color-primary);
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: var(--transition-smooth);
-  border: 1px solid var(--border-color);
-}
-
-.food-card:hover .food-card-btn {
-  background-color: var(--color-primary);
-  color: white;
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 12px rgba(30, 83, 60, 0.25);
+.desktop-only-badge {
+  display: inline-block !important;
 }
 
 /* Skeletons customization */
@@ -378,7 +405,7 @@
     display: none; /* Hide floating badges on small mobile screens to keep it clean */
   }
 
-  /* Compact 2-Column Grid on Mobile Screens */
+  /* Horizontal Split Card Layout on Mobile Screens */
   .suggestion-section {
     margin: 40px auto;
     width: 92%;
@@ -386,6 +413,7 @@
 
   .suggestion-header {
     margin-bottom: 20px;
+    align-items: center;
   }
 
   .section-title {
@@ -393,58 +421,158 @@
   }
 
   .dishes-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: 1fr; /* Single column horizontal list stack */
+    gap: 16px;
   }
 
   .food-card {
+    flex-direction: row; /* Horizontal split! */
+    height: 145px;
     border-radius: var(--radius-md);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
   }
 
-  .food-card-img-wrapper {
-    height: 110px;
+  .food-card-details {
+    flex: 1.4;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
   }
 
-  .food-badge-overlay {
-    font-size: 0.6rem;
-    padding: 3px 6px;
-    top: 8px;
-    left: 8px;
-  }
-
-  .food-card-body {
-    padding: 10px;
+  .food-card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
   }
 
   .food-card-title {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary-text-color);
+    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 140px;
   }
 
-  .food-card-price-row {
-    margin-bottom: 10px;
-  }
-
-  .food-card-price {
-    font-size: 0.95rem;
-  }
-
-  .food-card-rating {
-    font-size: 0.75rem;
-    gap: 2px;
-  }
-
-  .food-card-btn {
-    padding: 8px;
-    font-size: 0.75rem;
+  .food-card-rating-badge {
+    background-color: rgba(30, 83, 60, 0.12);
+    color: var(--color-primary);
+    padding: 2px 6px;
     border-radius: var(--radius-sm);
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .food-card-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.78rem;
+    color: var(--secondary-text-color);
+    line-height: 1.35;
+    margin: 4px 0;
+  }
+
+  .food-card-pricing-row {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: auto;
+    margin-bottom: 0;
+  }
+
+  .pricing-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+  }
+
+  .original-price {
+    text-decoration: line-through;
+    color: var(--secondary-text-color);
+    font-size: 0.8rem;
+  }
+
+  .discount-badge {
+    background-color: #f1c40f;
+    color: #0b0f19;
+    padding: 1px 4px;
+    border-radius: var(--radius-xs);
+    font-size: 0.65rem;
+    font-weight: 800;
+  }
+
+  .final-price {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  .food-card-img-wrapper {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    order: 1; /* Forces image to display on the right */
+  }
+
+  .food-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .food-card-floating-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(30, 83, 60, 0.25);
+    transition: var(--transition-smooth);
+    z-index: 5;
+  }
+
+  .food-card-floating-btn:hover {
+    background-color: #173f2e;
+    transform: scale(1.05);
+  }
+
+  /* Display Helpers toggles */
+  .desktop-only-badge {
+    display: none !important;
+  }
+
+  .desktop-only-btn {
+    display: none !important;
+  }
+
+  .mobile-only-btn {
+    display: flex !important;
   }
 
   .skeleton-card {
-    padding: 10px;
+    padding: 12px;
     border-radius: var(--radius-md);
   }
 }
