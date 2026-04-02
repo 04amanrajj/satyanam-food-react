@@ -78,9 +78,7 @@ const About = () => {
               allowFullScreen
               loading="lazy"
               zoom="17"
-            ></iframe>
-
-            <iframe
+              title="Google Maps Location of Satyanam Food Center"
             ></iframe>
 
             <div className="flex justify-between">
