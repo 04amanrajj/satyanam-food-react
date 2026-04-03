@@ -12,6 +12,8 @@ import './styles/global.css';
 import { useEffect, useState } from "react";
 import Switch from "./components/ui/Switch"; // Import Switch component
 
+import BottomNav from "./components/BottomNav";
+
 function App() {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode") || false);
 
@@ -37,6 +39,7 @@ function App() {
           <Route path="/checkout" element={<Checkout darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
           <Route path="*" element={<NotFound darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
         </Routes>
+        <BottomNav />
       </Router>
       <Switch />
       <Footer />

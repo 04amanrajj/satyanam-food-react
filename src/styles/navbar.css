@@ -211,6 +211,11 @@
   background: var(--border-color);
 }
 
+/* Hide mobile-only components on desktop by default */
+.bottom-nav-bar {
+  display: none;
+}
+
 /* Responsive Rules */
 @media (max-width: 768px) {
   .navbar-header {
@@ -308,5 +313,86 @@
     right: auto;
     border: none;
     box-shadow: none;
+  }
+
+  /* Mobile Bottom Navigation Bar Capsule */
+  .bottom-nav-bar {
+    display: flex;
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    height: 64px;
+    background: rgba(250, 249, 246, 0.9); /* creamy light mode transparent */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  [data-theme=true] .bottom-nav-bar {
+    background: rgba(11, 15, 25, 0.9); /* slate dark mode transparent */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none !important;
+    color: var(--secondary-text-color);
+    font-size: 0.72rem;
+    font-weight: 700;
+    gap: 4px;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+    justify-content: center;
+  }
+
+  .bottom-nav-item i {
+    font-size: 1.2rem;
+    transition: var(--transition-smooth);
+  }
+
+  .bottom-nav-item:hover,
+  .bottom-nav-item.active {
+    color: var(--color-primary);
+  }
+
+  .bottom-nav-item.active i {
+    transform: translateY(-2px) scale(1.08);
+  }
+
+  .bottom-nav-cart-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-nav-cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--color-secondary);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    width: 15px;
+    height: 15px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--bg-surface);
+    box-shadow: var(--shadow-sm);
   }
 }

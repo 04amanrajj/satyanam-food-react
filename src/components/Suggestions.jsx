@@ -8,6 +8,22 @@ export default function Suggestions({ dishes }) {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [addedDishName, setAddedDishName] = useState("");
 
+    // Dynamic gradient builder based on dish image color accents
+    const getCardGradient = (dishName) => {
+        const name = dishName?.toLowerCase() || "";
+        let color = "rgba(30, 83, 60, 0.04)"; // default pure veg emerald
+        if (name.includes("thali")) {
+            color = "rgba(241, 196, 15, 0.05)"; // gold
+        } else if (name.includes("paneer") || name.includes("masala") || name.includes("gravy")) {
+            color = "rgba(230, 126, 34, 0.05)"; // saffron/orange
+        } else if (name.includes("pasta") || name.includes("chilli") || name.includes("manchurian")) {
+            color = "rgba(231, 76, 60, 0.05)"; // warm red
+        } else if (name.includes("chowmein") || name.includes("noodle") || name.includes("rice")) {
+            color = "rgba(46, 204, 113, 0.05)"; // light green
+        }
+        return `linear-gradient(135deg, var(--bg-surface) 60%, ${color} 100%)`;
+    };
+
     // Simulate standard skeleton screen load
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 1200);
@@ -58,7 +74,11 @@ export default function Suggestions({ dishes }) {
                 ) : (
                     // Render aesthetic responsive cards
                     popularDishes.map((dish, index) => (
-                        <article key={index} className="food-card">
+                        <article 
+                            key={index} 
+                            className="food-card"
+                            style={{ background: getCardGradient(dish.name) }}
+                        >
                             {/* Left/Main Details Area */}
                             <div className="food-card-details">
                                 <div className="food-card-title-row">
@@ -75,11 +95,9 @@ export default function Suggestions({ dishes }) {
                                 </p>
                                 
                                 <div className="food-card-pricing-row">
-                                    <div className="pricing-top">
-                                        <span className="original-price">₹{Math.round(dish.price * 1.25)}</span>
-                                        <span className="discount-badge">20% OFF</span>
-                                    </div>
                                     <span className="final-price">₹{dish.price}</span>
+                                    <span className="original-price">₹{Math.round(dish.price * 1.25)}</span>
+                                    <span className="discount-badge">20% OFF</span>
                                 </div>
 
                                 {/* Desktop-only primary action button */}
