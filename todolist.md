@@ -20,3 +20,4 @@
 - April 1: 2-column mobile card grids validated
 - April 2: Mobile thali horizontal split layout completed
 - April 3: floating bottom navigation capsule implemented
+- April 4: Mobile horizontal overflow locked and top/bottom bars fixed
