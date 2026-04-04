@@ -329,12 +329,12 @@
     width: 90% !important;
     max-width: 400px !important;
     height: 64px !important;
-    background: rgba(250, 249, 246, 0.9) !important; /* creamy light mode transparent */
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border-radius: var(--radius-md) !important;
-    border: 1px solid var(--border-color) !important;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+    background: rgba(250, 249, 246, 0.9); /* creamy light mode transparent */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
     z-index: 1050 !important;
     align-items: center !important;
     justify-content: space-around !important;
