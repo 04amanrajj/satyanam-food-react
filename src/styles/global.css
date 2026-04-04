@@ -61,6 +61,9 @@ body {
   background-color: var(--bg-canvas) !important;
   color: var(--primary-text-color);
   transition: var(--transition-smooth);
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
 }
 
 /* Typography styles */

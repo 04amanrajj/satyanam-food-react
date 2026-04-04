@@ -219,10 +219,14 @@
 /* Responsive Rules */
 @media (max-width: 768px) {
   .navbar-header {
-    width: 95%;
-    top: 10px;
+    position: fixed !important;
+    width: 95% !important;
+    top: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
     padding: 8px 16px !important;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md) !important;
+    z-index: 1020 !important;
   }
 
   .hamburger-btn {
@@ -317,23 +321,23 @@
 
   /* Mobile Bottom Navigation Bar Capsule */
   .bottom-nav-bar {
-    display: flex;
-    position: fixed;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    height: 64px;
-    background: rgba(250, 249, 246, 0.9); /* creamy light mode transparent */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    z-index: 1000;
-    align-items: center;
-    justify-content: space-around;
+    display: flex !important;
+    position: fixed !important;
+    bottom: 12px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 400px !important;
+    height: 64px !important;
+    background: rgba(250, 249, 246, 0.9) !important; /* creamy light mode transparent */
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-radius: var(--radius-md) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+    z-index: 1050 !important;
+    align-items: center !important;
+    justify-content: space-around !important;
   }
 
   [data-theme=true] .bottom-nav-bar {
