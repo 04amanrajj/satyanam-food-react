@@ -188,6 +188,7 @@
 
 .newsletter-submit-btn:hover {
   background: #143c2b;
+  transform: scale(1.05);
 }
 
 [data-theme=true] .newsletter-submit-btn:hover {
