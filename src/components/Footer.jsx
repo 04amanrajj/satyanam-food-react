@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useRestaurant } from "../contexts/RestaurantContext";
-import { Box, Container, Typography, Grid, Skeleton } from "@mui/material";
+import { Skeleton } from "@mui/material";
+import "../styles/footer.css";
 
-const Footer = () => {
+export default function Footer() {
     const { restaurant } = useRestaurant();
     const [loading, setLoading] = useState(true);
 
@@ -12,122 +14,143 @@ const Footer = () => {
         }
     }, [restaurant]);
 
+    const handleNewsletterSubmit = (e) => {
+        e.preventDefault();
+        alert("Thank you for subscribing to our premium newsletter!");
+    };
+
+    if (loading) {
+        return (
+            <footer className="premium-footer">
+                <div className="footer-grid">
+                    {Array.from({ length: 4 }).map((_, idx) => (
+                        <div className="footer-column" key={idx}>
+                            <Skeleton variant="text" width="60%" height={28} style={{ marginBottom: "16px" }} />
+                            <Skeleton variant="text" width="100%" height={20} />
+                            <Skeleton variant="text" width="90%" height={20} />
+                            <Skeleton variant="text" width="80%" height={20} />
+                        </div>
+                    ))}
+                </div>
+            </footer>
+        );
+    }
+
     return (
-        <Box component="footer" sx={{ backgroundColor: "#f3f4f6", py: 5 }}>
-            <Container maxWidth="lg">
-                {loading ? (
-                    <SkeletonLoader />
-                ) : (
-                    <FooterContent restaurant={restaurant} />
-                )}
-            </Container>
-        </Box>
-    );
-};
+        <footer className="premium-footer">
+            <div className="footer-grid">
+                {/* Column 1: Brand details */}
+                <div className="footer-column">
+                    <div className="footer-brand-title brand-font">
+                        <span>SatyaNaam Food</span>
+                        <span className="footer-brand-dot"></span>
+                    </div>
+                    <p className="footer-desc">
+                        Bringing you the authentic taste of premium traditional Indian thalis, prepared fresh daily with natural, pure ingredients.
+                    </p>
+                    <div className="footer-socials">
+                        <a 
+                            href={restaurant?.socialMedia?.instagram || "https://instagram.com"} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="social-badge"
+                            aria-label="Follow us on Instagram"
+                        >
+                            <i className="fab fa-instagram"></i>
+                        </a>
+                        <a 
+                            href={restaurant?.socialMedia?.facebook || "https://facebook.com"} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="social-badge"
+                            aria-label="Follow us on Facebook"
+                        >
+                            <i className="fab fa-facebook-f"></i>
+                        </a>
+                        <a 
+                            href={restaurant?.socialMedia?.twitter || "https://twitter.com"} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="social-badge"
+                            aria-label="Follow us on Twitter"
+                        >
+                            <i className="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
 
-const SkeletonLoader = () => (
-    <Box component="footer" sx={{ backgroundColor: "#f3f4f6", py: 5 }}>
-        <Container maxWidth="lg">
-            <Grid container spacing={4} justifyContent="space-between">
-                {/* Brand Info */}
-                <Grid item xs={12} md={3} textAlign={{ xs: "center", md: "left" }}>
-                    <Typography variant="h6" fontWeight="bold">
-                        <Skeleton animation="wave" variant="text" width={250} height={30} />
-                    </Typography>
-                    <Skeleton animation="wave" variant="text" width={100} height={20} />
-                </Grid>
-
-                {/* Navigation Links */}
-                {[
-                    { title: "Company", links: ["About", "Store", "FAQ"] },
-                    { title: "Service", links: ["Delivery", "Payment", "Contacts"] },
-                    { title: "Follow us", links: ["Instagram", "Facebook", "Twitter"] },
-                ].map((section, index) => (
-                    <Grid item xs={12} sm={4} md={2} key={index} textAlign={{ xs: "center", md: "left" }}>
-                        <Skeleton animation="wave" variant="text" width={90} height={25} />
-                        {section.links.map((link, i) => (
-                            <Typography key={i} color="textSecondary">
-                                <Skeleton animation="wave" variant="text" width={100} height={20} />
-                            </Typography>
-                        ))}
-                    </Grid>
-                ))}
-
-                {/* Newsletter Subscription */}
-                <Grid item xs={12} md={4} textAlign={{ xs: "center", md: "left" }}>
-                    <Typography fontWeight="bold" gutterBottom>
-                        <Skeleton animation="wave" variant="text" width={200} height={25} />
-                    </Typography>
-                    <Box display="flex" justifyContent={{ xs: "center", md: "flex-start" }}>
-                        <Skeleton variant="rectangular" width={200} height={40} />
-                    </Box>
-                    <Box mt={2}>
-                        <Skeleton animation="wave" variant="text" width={150} height={20} />
-                        <Skeleton animation="wave" variant="text" width={150} height={20} />
-                    </Box>
-                </Grid>
-            </Grid>
-        </Container>
-    </Box>
-);
-
-const FooterContent = ({ restaurant }) => (
-    <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between ">
-        {/* Left Side - Restaurant Info */}
-        <div className="text-left mb-6 md:mb-0 w-full md:w-auto">
-            <h1 className="text-2xl font-bold mb-2">{restaurant?.name}</h1>
-            <p className="text-gray-600">2025 © All rights reserved</p>
-        </div>
-
-        {/* Middle Section - Links */}
-        <div className="flex flex-col md:flex-row justify-center md:justify-between w-full md:w-auto">
-            {[
-                { title: "Company", links: ["About", "FAQ"] },
-                { title: "Service", links: ["Delivery", "Payment", "Contacts"] },
-                { title: "Follow us", links: ["Instagram", "Facebook", "Twitter"] },
-            ].map((section, index) => (
-                <div key={index} className="text-left mb-6 md:mb-0 md:mr-10 w-full md:w-auto">
-                    <h5 className="font-bold mb-1">{section.title}</h5>
-                    <ul className="pl-1">
-                        {section.links.map((link, i) => (
-                            <li key={i}>
-                                <a
-                                    href={restaurant?.socialMedia?.[link.toLowerCase()] || (link === "Twitter" ? "https://twitter.com" : "#")}
-                                    className="text-gray-600 hover:text-gray-800 transition"
-                                >
-                                    {link}
-                                </a>
-                            </li>
-                        ))}
+                {/* Column 2: Navigation Links */}
+                <div className="footer-column">
+                    <h3 className="footer-heading">Quick Links</h3>
+                    <ul className="footer-links">
+                        <li className="footer-link-item">
+                            <Link to="/"><i className="fas fa-chevron-right" style={{ fontSize: "0.75rem" }}></i> Home</Link>
+                        </li>
+                        <li className="footer-link-item">
+                            <Link to="/menu"><i className="fas fa-chevron-right" style={{ fontSize: "0.75rem" }}></i> Dishes Menu</Link>
+                        </li>
+                        <li className="footer-link-item">
+                            <Link to="/about"><i className="fas fa-chevron-right" style={{ fontSize: "0.75rem" }}></i> About Us</Link>
+                        </li>
+                        <li className="footer-link-item">
+                            <Link to="/user"><i className="fas fa-chevron-right" style={{ fontSize: "0.75rem" }}></i> Profile</Link>
+                        </li>
                     </ul>
                 </div>
-            ))}
-        </div>
 
-        {/* Right Side - Newsletter */}
-        <div className="text-center md:text-left w-full md:w-auto">
-            <h4 className="font-bold mb-2">Get our newsletters</h4>
-            <form className="flex justify-center md:justify-start">
-                <input
-                    type="email"
-                    placeholder="Your email"
-                    className="p-2 border border-gray-300 rounded-l-md focus:outline-none w-3/4 md:w-auto"
-                />
-                <button type="submit" className="p-2 bg-gray-700 text-white rounded-r-md">
-                    <i className="fas fa-check"></i>
-                </button>
-            </form>
-            <div className="mt-2">
-                <a href="/terms" className="text-gray-600 mr-4 hover:text-gray-800 transition">
-                    Terms & Conditions
-                </a>
-                <a href="/privacy" className="text-gray-600 hover:text-gray-800 transition">
-                    Privacy Policy
-                </a>
+                {/* Column 3: Contact details */}
+                <div className="footer-column">
+                    <h3 className="footer-heading">Our Store</h3>
+                    <div className="footer-contacts">
+                        <div className="contact-item">
+                            <i className="fas fa-map-marker-alt"></i>
+                            <span>
+                                {restaurant?.address?.line1 || "Srinath Dham, Sukher"}<br />
+                                {restaurant?.address?.city || "Udaipur"}, {restaurant?.address?.state || "Rajasthan"}
+                            </span>
+                        </div>
+                        <div className="contact-item">
+                            <i className="fas fa-phone-alt"></i>
+                            <span>{restaurant?.phone || "+91 94142 86424"}</span>
+                        </div>
+                        <div className="contact-item">
+                            <i className="fas fa-envelope"></i>
+                            <span>{restaurant?.email || "info@satyanamfood.com"}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Column 4: Newsletter */}
+                <div className="footer-column">
+                    <h3 className="footer-heading">Newsletter</h3>
+                    <p className="footer-desc" style={{ marginBottom: "4px" }}>
+                        Subscribe to get latest updates, special discount coupons and new dishes!
+                    </p>
+                    <form className="footer-newsletter-form" onSubmit={handleNewsletterSubmit}>
+                        <input 
+                            type="email" 
+                            placeholder="example@gmail.com" 
+                            className="newsletter-input" 
+                            required 
+                            aria-label="Email address for newsletter"
+                        />
+                        <button type="submit" className="newsletter-submit-btn" aria-label="Subscribe">
+                            <i className="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
-    </div>
 
-);
-
-export default Footer;
+            {/* Bottom Copyright Area */}
+            <div className="footer-bottom">
+                <p className="footer-copy">
+                    &copy; {new Date().getFullYear()} SatyaNaam Food Center. All rights reserved.
+                </p>
+                <div className="footer-legal-links">
+                    <Link to="/terms">Terms of Service</Link>
+                    <Link to="/privacy">Privacy Policy</Link>
+                </div>
+            </div>
+        </footer>
+    );
+}
