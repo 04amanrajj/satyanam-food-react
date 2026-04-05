@@ -8,7 +8,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     // Calculate total quantity of items in the cart
-    const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+    const cartCount = Array.isArray(cart) ? cart.reduce((total, item) => total + (item.quantity || 1), 0) : 0;
 
     return (
         <header className="navbar-header">

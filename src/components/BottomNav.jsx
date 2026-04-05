@@ -2,10 +2,9 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import "../styles/navbar.css"; // Reuse navbar classes or declare custom ones
-
 export default function BottomNav() {
     const { cart } = useRestaurant();
-    const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+    const cartCount = Array.isArray(cart) ? cart.reduce((total, item) => total + (item.quantity || 1), 0) : 0;
 
     return (
         <div className="bottom-nav-bar glassmorphic mobile-only-nav">

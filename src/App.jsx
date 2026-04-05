@@ -40,9 +40,9 @@ function App() {
           <Route path="*" element={<NotFound darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
         </Routes>
         <BottomNav />
+        <Footer />
       </Router>
       <Switch />
-      <Footer />
     </RestaurantProvider>
   );
 }
