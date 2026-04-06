@@ -1,0 +1,273 @@
+/* ==========================================
+   ✨ Satyanam Food - Cart Drawer Stylesheet ✨
+   ========================================== */
+
+.cart-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.cart-drawer-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: -450px;
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+  z-index: 2010;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cart-drawer-overlay.open .cart-drawer {
+  right: 0;
+}
+
+/* Header */
+.cart-drawer-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-drawer-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary-text-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-drawer-title i {
+  color: var(--color-primary);
+}
+
+.cart-drawer-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-canvas);
+  color: var(--secondary-text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--transition-smooth);
+}
+
+.cart-drawer-close-btn:hover {
+  background: var(--border-color);
+  color: var(--primary-text-color);
+  transform: rotate(90deg);
+}
+
+/* Items List */
+.cart-drawer-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: thin;
+}
+
+.cart-drawer-item {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cart-drawer-item-img {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.cart-drawer-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cart-drawer-item-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+}
+
+.cart-drawer-item-price {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* Quantity Adjustments */
+.cart-drawer-quantity-controls {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-canvas);
+  overflow: hidden;
+  width: fit-content;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--primary-text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: var(--transition-smooth);
+}
+
+.qty-btn:hover {
+  background: var(--border-color);
+}
+
+.qty-val {
+  padding: 0 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+}
+
+.cart-drawer-remove-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(220, 53, 69, 0.15);
+  background: rgba(220, 53, 69, 0.05);
+  color: #dc3545;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-smooth);
+}
+
+.cart-drawer-remove-btn:hover {
+  background: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+/* Empty State */
+.cart-drawer-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  color: var(--secondary-text-color);
+  text-align: center;
+  padding: 40px;
+}
+
+.cart-drawer-empty i {
+  font-size: 3.5rem;
+  color: var(--border-color);
+  animation: float-slow 3s ease-in-out infinite;
+}
+
+.cart-drawer-empty h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-text-color);
+}
+
+/* Footer / Summary Area */
+.cart-drawer-footer {
+  padding: 24px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart-drawer-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+}
+
+.cart-drawer-summary-row.total {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--primary-text-color);
+  border-top: 1px dashed var(--border-color);
+  padding-top: 12px;
+}
+
+.cart-drawer-checkout-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-align: center;
+  text-decoration: none !important;
+  display: block;
+}
+
+.cart-drawer-checkout-btn:hover {
+  background: #143c2b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 83, 60, 0.25);
+}
+
+[data-theme=true] .cart-drawer-checkout-btn:hover {
+  background: #27ae60;
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .cart-drawer {
+    max-width: 100%;
+    right: -100%;
+  }
+}
