@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import "../styles/navbar.css"; // Reuse navbar classes or declare custom ones
-export default function BottomNav() {
+export default function BottomNav({ onCartOpen }) {
     const { cart } = useRestaurant();
     const cartCount = Array.isArray(cart) ? cart.reduce((total, item) => total + (item.quantity || 1), 0) : 0;
 
@@ -24,9 +24,11 @@ export default function BottomNav() {
                 <span>Profile</span>
             </NavLink>
 
-            <NavLink 
-                to="/checkout" 
-                className={({ isActive }) => `bottom-nav-item ${isActive ? "active" : ""}`}
+            <button 
+                type="button"
+                className="bottom-nav-item"
+                onClick={onCartOpen}
+                style={{ border: 'none', background: 'transparent' }}
             >
                 <div className="bottom-nav-cart-wrapper">
                     <i className="fas fa-shopping-basket"></i>
@@ -35,7 +37,7 @@ export default function BottomNav() {
                     )}
                 </div>
                 <span>Cart</span>
-            </NavLink>
+            </button>
         </div>
     );
 }

@@ -11,11 +11,12 @@ import NotFound from "./pages/notfound";
 import './styles/global.css';
 import { useEffect, useState } from "react";
 import Switch from "./components/ui/Switch"; // Import Switch component
-
 import BottomNav from "./components/BottomNav";
+import CartDrawer from "./components/CartDrawer";
 
 function App() {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkmode") || false);
+  const [cartOpen, setCartOpen] = useState(false);
 
   useEffect(() => {
     const theme = darkMode ? true : false;
@@ -30,7 +31,7 @@ function App() {
   return (
     <RestaurantProvider>
       <Router>
-        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />
+        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} onCartOpen={() => setCartOpen(true)} />
         <Routes>
           <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
           <Route path="/menu" element={<Menu darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
@@ -39,7 +40,8 @@ function App() {
           <Route path="/checkout" element={<Checkout darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
           <Route path="*" element={<NotFound darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
         </Routes>
-        <BottomNav />
+        <BottomNav onCartOpen={() => setCartOpen(true)} />
+        <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
         <Footer />
       </Router>
       <Switch />

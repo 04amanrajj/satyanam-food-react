@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import "../styles/navbar.css";
 
-export default function Navbar({ darkMode, toggleDarkMode }) {
+export default function Navbar({ darkMode, toggleDarkMode, onCartOpen }) {
     const { restaurant, cart } = useRestaurant();
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -78,10 +78,13 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                     </div>
 
                     {/* Cart Trigger Bubble */}
-                    <Link 
-                        to="/checkout" 
+                    <button 
+                        type="button"
                         className="cart-bubble-btn"
-                        onClick={() => setMenuOpen(false)}
+                        onClick={() => {
+                            onCartOpen();
+                            setMenuOpen(false);
+                        }}
                         aria-label="View shopping cart"
                         title="Shopping Cart"
                     >
@@ -89,7 +92,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                         {cartCount > 0 && (
                             <span className="cart-badge">{cartCount}</span>
                         )}
-                    </Link>
+                    </button>
                 </nav>
             </div>
         </header>
