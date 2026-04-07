@@ -43,7 +43,7 @@ export default function Checkout() {
     const gst = parseFloat((subtotal * 0.05).toFixed(2));
     const grandTotal = parseFloat((subtotal + deliveryFee + gst - discountAmount).toFixed(2));
 
-    // Handle Promo Code Apply
+    // Handle Promo Code Application and calculate percentage discount amounts
     const handleApplyPromo = (e) => {
         e.preventDefault();
         setPromoError("");
