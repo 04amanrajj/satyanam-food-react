@@ -87,7 +87,7 @@ export default function Checkout() {
         return false;
     };
 
-    // Handle Order Submission
+    // Handle Order Submission and structure API request payloads
     const handlePlaceOrder = () => {
         const generatedId = "SNF-" + Math.floor(100000 + Math.random() * 900000);
         setOrderId(generatedId);
