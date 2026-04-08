@@ -79,6 +79,7 @@ export default function Checkout() {
         return formData.name && formData.email && formData.phone && formData.street && formData.city && formData.zip;
     };
 
+    // Verify mock UPI address structures and credit card CVV bounds
     const isStep3Valid = () => {
         if (paymentMethod === "COD") return true;
         if (paymentMethod === "Card") return cardData.number && cardData.expiry && cardData.cvc;
