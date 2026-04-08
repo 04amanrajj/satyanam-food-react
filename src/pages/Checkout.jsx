@@ -74,7 +74,7 @@ export default function Checkout() {
         setCardData({ ...cardData, [e.target.name]: e.target.value });
     };
 
-    // Form Validators
+    // Checkout Form Validation logic for delivery data
     const isStep2Valid = () => {
         return formData.name && formData.email && formData.phone && formData.street && formData.city && formData.zip;
     };
