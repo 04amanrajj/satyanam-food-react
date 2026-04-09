@@ -123,7 +123,7 @@ export default function Checkout() {
         }
     }, [step, trackerStep]);
 
-    // Empty State
+    // Empty State fallback when basket count hits zero
     if (safeCart.length === 0 && step !== 4) {
         return (
             <div className="checkout-page-container">
