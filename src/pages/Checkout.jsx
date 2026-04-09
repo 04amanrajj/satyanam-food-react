@@ -107,7 +107,7 @@ export default function Checkout() {
         clearCart();
     };
 
-    // Simulate Live status tracker progress updates
+    // Simulate Live status tracker progress timelines and interval ticks
     useEffect(() => {
         if (step === 4 && trackerStep < 4) {
             const interval = setInterval(() => {
