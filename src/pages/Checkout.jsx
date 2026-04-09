@@ -146,7 +146,7 @@ export default function Checkout() {
     return (
         <div className="checkout-page-container">
             <div className="checkout-wizard-card">
-                {/* 1. Header Timeline Progress Tracker */}
+                {/* 1. Header Timeline Progress Tracker wizard indicator nodes */}
                 <div className="checkout-progress-header">
                     <div className="checkout-steps-tracker">
                         <div className={`checkout-step-node ${step >= 1 ? "active" : ""} ${step > 1 ? "completed" : ""}`}>
