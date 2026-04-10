@@ -92,7 +92,7 @@ export default function Checkout() {
         const generatedId = "SNF-" + Math.floor(100000 + Math.random() * 900000);
         setOrderId(generatedId);
 
-        // Prebuilt backend sync attempt placeholder
+        // Prebuilt backend sync attempt API connection endpoint placeholder
         console.log("Syncing order parameters with prebuilt backend...");
         console.log("Payload details:", {
             orderId: generatedId,
