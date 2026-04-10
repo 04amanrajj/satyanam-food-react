@@ -543,7 +543,7 @@ export default function Checkout() {
                     )}
                 </div>
 
-                {/* 3. Right side persistent Summary panel */}
+                {/* 3. Right side persistent Summary panel sidebar calculations */}
                 {step < 4 && (
                     <div className="checkout-summary-sidebar">
                         <h3 className="summary-title">Order Summary</h3>
