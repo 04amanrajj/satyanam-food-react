@@ -168,7 +168,7 @@ export default function Checkout() {
                     </div>
                 </div>
 
-                {/* 2. Left side Main Step Controls */}
+                {/* 2. Left side Main Step Controls rendering wizard step wrappers */}
                 <div className="checkout-main-content">
                     {/* STEP 1: Review Items & Promo codes */}
                     {step === 1 && (
