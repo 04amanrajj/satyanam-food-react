@@ -50,18 +50,24 @@ export const RestaurantProvider = ({ children }) => {
     };
 
     const addToCart = (item) => {
-        const existing = cart.find(i => i.id === item.id);
+        const itemId = item._id || item.id;
+        const normalizedItem = {
+            ...item,
+            id: itemId,
+            _id: itemId
+        };
+        const existing = cart.find(i => (i._id || i.id) === itemId);
         let updated;
         if (existing) {
-            updated = cart.map(i => i.id === item.id ? { ...i, quantity: (i.quantity || 1) + 1 } : i);
+            updated = cart.map(i => (i._id || i.id) === itemId ? { ...i, quantity: (i.quantity || 1) + 1 } : i);
         } else {
-            updated = [...cart, { ...item, quantity: 1 }];
+            updated = [...cart, { ...normalizedItem, quantity: 1 }];
         }
         syncCart(updated);
     };
 
     const removeFromCart = (itemId) => {
-        const updated = cart.filter(i => i.id !== itemId);
+        const updated = cart.filter(i => (i._id || i.id) !== itemId);
         syncCart(updated);
     };
 
@@ -70,7 +76,7 @@ export const RestaurantProvider = ({ children }) => {
             removeFromCart(itemId);
             return;
         }
-        const updated = cart.map(i => i.id === itemId ? { ...i, quantity: newQty } : i);
+        const updated = cart.map(i => (i._id || i.id) === itemId ? { ...i, quantity: newQty } : i);
         syncCart(updated);
     };
 
