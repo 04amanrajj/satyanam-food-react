@@ -12,8 +12,7 @@ export default function CartDrawer({ isOpen, onClose }) {
     // Calculations
     const subtotal = safeCart.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
     const deliveryFee = subtotal === 0 || subtotal >= 500 ? 0 : 40;
-    const gst = parseFloat((subtotal * 0.05).toFixed(2));
-    const total = parseFloat((subtotal + deliveryFee + gst).toFixed(2));
+    const total = parseFloat((subtotal + deliveryFee).toFixed(2));
 
     const handleOverlayClick = (e) => {
         if (e.target.classList.contains("cart-drawer-overlay")) {
@@ -106,10 +105,6 @@ export default function CartDrawer({ isOpen, onClose }) {
                         <div className="cart-drawer-summary-row">
                             <span>Delivery Fee</span>
                             <span>{deliveryFee === 0 ? "FREE" : `Rs.${deliveryFee}`}</span>
-                        </div>
-                        <div className="cart-drawer-summary-row">
-                            <span>GST (5%)</span>
-                            <span>Rs.{gst}</span>
                         </div>
                         <div className="cart-drawer-summary-row total">
                             <span>Total Amount</span>

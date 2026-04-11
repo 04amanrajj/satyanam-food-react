@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import "../styles/checkout.css";
 
@@ -37,11 +38,14 @@ export default function Checkout() {
     const [orderId, setOrderId] = useState("");
     const [trackerStep, setTrackerStep] = useState(1);
 
+    // Active backend order placing & tracking states
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+    const [orderError, setOrderError] = useState("");
+
     // Calculations
     const subtotal = safeCart.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0);
     const deliveryFee = subtotal === 0 || subtotal >= 500 ? 0 : 40;
-    const gst = parseFloat((subtotal * 0.05).toFixed(2));
-    const grandTotal = parseFloat((subtotal + deliveryFee + gst - discountAmount).toFixed(2));
+    const grandTotal = parseFloat((subtotal + deliveryFee - discountAmount).toFixed(2));
 
     // Handle Promo Code Application and calculate percentage discount amounts
     const handleApplyPromo = (e) => {
@@ -88,40 +92,85 @@ export default function Checkout() {
     };
 
     // Handle Order Submission and structure API request payloads
-    const handlePlaceOrder = () => {
-        const generatedId = "SNF-" + Math.floor(100000 + Math.random() * 900000);
-        setOrderId(generatedId);
+    const handlePlaceOrder = async () => {
+        setIsPlacingOrder(true);
+        setOrderError("");
 
-        // Prebuilt backend sync attempt API connection endpoint placeholder
-        console.log("Syncing order parameters with prebuilt backend...");
-        console.log("Payload details:", {
-            orderId: generatedId,
-            items: safeCart,
-            customer: formData,
-            payment: { method: paymentMethod, upi: upiId, cardEnding: cardData.number.slice(-4) },
-            totalAmount: grandTotal
-        });
+        const orderPayload = {
+            cart: {
+                items: safeCart.map(item => ({
+                    item: {
+                        name: item.name,
+                        price: item.price,
+                        image: item.image,
+                        category: item.category
+                    },
+                    quantity: item.quantity || 1
+                })),
+                totalprice: parseFloat(grandTotal)
+            },
+            userAddress: `${formData.street}, ${formData.city}, ${formData.state} - ${formData.zipcode}`,
+            userMSG: formData.notes || "",
+            userMail: formData.email,
+            userName: formData.name,
+            userPhone: Number(formData.phone)
+        };
 
-        // Advance to tracker step
-        setStep(4);
-        clearCart();
+        try {
+            const response = await axios.post("https://satyanaam-food-backend.onrender.com/order/new", orderPayload);
+            const createdOrder = response.data?.data;
+            if (createdOrder && createdOrder._id) {
+                setOrderId(createdOrder._id);
+                setStep(4);
+                setTrackerStep(1); // Pending initially
+                clearCart();
+            } else {
+                throw new Error("Could not fetch the registered order object from backend database.");
+            }
+        } catch (error) {
+            console.error("Order placement failed:", error);
+            setOrderError(error.response?.data?.message || error.message || "Failed to submit order to restaurant backend.");
+        } finally {
+            setIsPlacingOrder(false);
+        }
     };
 
-    // Simulate Live status tracker progress timelines and interval ticks
+    // Live order tracking polled from backend status changes
     useEffect(() => {
-        if (step === 4 && trackerStep < 4) {
-            const interval = setInterval(() => {
-                setTrackerStep(prev => {
-                    if (prev >= 4) {
-                        clearInterval(interval);
-                        return 4;
+        if (step === 4 && orderId) {
+            const pollStatus = async () => {
+                try {
+                    const response = await axios.post("https://satyanaam-food-backend.onrender.com/order", {
+                        userName: formData.name,
+                        userPhone: Number(formData.phone)
+                    });
+                    
+                    const ordersList = response.data;
+                    if (Array.isArray(ordersList)) {
+                        // Find this specific placed order
+                        const currentOrder = ordersList.find(o => o._id === orderId);
+                        if (currentOrder) {
+                            const currentStatus = currentOrder.status; // "Pending", "Preparing", or "Delivered"
+                            console.log("Polled backend order status:", currentStatus);
+                            if (currentStatus === "Pending") {
+                                setTrackerStep(1);
+                            } else if (currentStatus === "Preparing") {
+                                setTrackerStep(2);
+                            } else if (currentStatus === "Delivered") {
+                                setTrackerStep(4); // Fully delivered
+                            }
+                        }
                     }
-                    return prev + 1;
-                });
-            }, 6000); // Progress tracker moves every 6 seconds
+                } catch (err) {
+                    console.error("Error polling order status:", err);
+                }
+            };
+
+            pollStatus();
+            const interval = setInterval(pollStatus, 5000); // Check status every 5 seconds
             return () => clearInterval(interval);
         }
-    }, [step, trackerStep]);
+    }, [step, orderId, formData.name, formData.phone]);
 
     // Empty State fallback when basket count hits zero
     if (safeCart.length === 0 && step !== 4) {
@@ -530,14 +579,45 @@ export default function Checkout() {
                             )}
 
                             {step === 3 && (
-                                <button 
-                                    className="wizard-next-btn"
-                                    onClick={handlePlaceOrder}
-                                    disabled={!isStep3Valid()}
-                                    style={{ opacity: isStep3Valid() ? 1 : 0.5, cursor: isStep3Valid() ? "pointer" : "not-allowed" }}
-                                >
-                                    Place Order (Rs.{grandTotal})
-                                </button>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+                                    {orderError && (
+                                        <div style={{ 
+                                            color: "#dc3545", 
+                                            fontSize: "0.85rem", 
+                                            fontWeight: "600", 
+                                            textAlign: "center", 
+                                            background: "rgba(220, 53, 69, 0.08)", 
+                                            padding: "10px", 
+                                            borderRadius: "8px",
+                                            border: "1px solid rgba(220, 53, 69, 0.2)"
+                                        }}>
+                                            <i className="fas fa-exclamation-circle" style={{ marginRight: "5px" }}></i>
+                                            {orderError}
+                                        </div>
+                                    )}
+                                    <button 
+                                        className="wizard-next-btn"
+                                        onClick={handlePlaceOrder}
+                                        disabled={!isStep3Valid() || isPlacingOrder}
+                                        style={{ 
+                                            opacity: (isStep3Valid() && !isPlacingOrder) ? 1 : 0.5, 
+                                            cursor: (isStep3Valid() && !isPlacingOrder) ? "pointer" : "not-allowed",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px"
+                                        }}
+                                    >
+                                        {isPlacingOrder ? (
+                                            <>
+                                                <i className="fas fa-spinner fa-spin"></i>
+                                                Placing Order...
+                                            </>
+                                        ) : (
+                                            `Place Order (Rs.${grandTotal})`
+                                        )}
+                                    </button>
+                                </div>
                             )}
                         </div>
                     )}
@@ -569,10 +649,6 @@ export default function Checkout() {
                             <div className="summary-bill-row">
                                 <span>Delivery Fee</span>
                                 <span>{deliveryFee === 0 ? "FREE" : `Rs.${deliveryFee}`}</span>
-                            </div>
-                            <div className="summary-bill-row">
-                                <span>GST (5%)</span>
-                                <span>Rs.{gst}</span>
                             </div>
                             {discountAmount > 0 && (
                                 <div className="summary-bill-row discount">
