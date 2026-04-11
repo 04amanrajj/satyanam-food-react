@@ -122,7 +122,7 @@ export default function Checkout() {
             if (createdOrder && createdOrder._id) {
                 setOrderId(createdOrder._id);
                 setStep(4);
-                setTrackerStep(1); // Pending initially
+                setTrackerStep(1); // Pending initially as default starting state
                 clearCart();
             } else {
                 throw new Error("Could not fetch the registered order object from backend database.");
