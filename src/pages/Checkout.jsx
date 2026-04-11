@@ -135,7 +135,7 @@ export default function Checkout() {
         }
     };
 
-    // Live order tracking polled from backend status changes
+    // Live order tracking polled from backend status changes and active intervals
     useEffect(() => {
         if (step === 4 && orderId) {
             const pollStatus = async () => {
