@@ -5,7 +5,7 @@ import "../styles/global.css";
 export default function Terms() {
     return (
         <div className="main-container" style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", minHeight: "80vh" }}>
-            <div className="glassmorphic" style={{ padding: "40px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(255, 255, 255, 0.1)" }}>
+            <div className="glassmorphic legal-screen-card" style={{ padding: "40px", borderRadius: "var(--radius-lg)", border: "1px solid rgba(255, 255, 255, 0.1)" }}>
                 <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "var(--color-primary)", textDecoration: "none", fontWeight: "600", marginBottom: "30px", fontSize: "0.95rem", transition: "var(--transition-smooth)" }} className="hover-glow">
                     <i className="fas fa-arrow-left"></i> Back to Home
                 </Link>
