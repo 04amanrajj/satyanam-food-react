@@ -8,9 +8,10 @@ import Checkout from "./pages/Checkout";
 import About from "./pages/About";
 import Footer from "./components/Footer";
 import NotFound from "./pages/notfound";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import './styles/global.css';
 import { useEffect, useState } from "react";
-import Switch from "./components/ui/Switch"; // Import Switch component
 import BottomNav from "./components/BottomNav";
 import CartDrawer from "./components/CartDrawer";
 
@@ -38,13 +39,14 @@ function App() {
           <Route path="/user" element={<Profile darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
           <Route path="/about" element={<About darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
           <Route path="/checkout" element={<Checkout darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />} />
         </Routes>
         <BottomNav onCartOpen={() => setCartOpen(true)} />
         <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
         <Footer />
       </Router>
-      <Switch />
     </RestaurantProvider>
   );
 }
