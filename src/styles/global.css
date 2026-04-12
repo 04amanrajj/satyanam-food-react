@@ -131,3 +131,12 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 10px 25px -5px rgba(46, 204, 113, 0.15);
 }/* Added March 24 responsive typography resets */
 /* March 24: optimized smooth transitions */
+
+/* Legal Screens and general document styles */
+.legal-screen-card {
+  box-shadow: var(--shadow-premium);
+  transition: var(--transition-smooth);
+}
+.legal-screen-card:hover {
+  border-color: var(--color-primary) !important;
+}
