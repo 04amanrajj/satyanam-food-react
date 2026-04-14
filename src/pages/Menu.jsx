@@ -1,47 +1,33 @@
-import "../styles/menu.css";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { getCategories, menuData } from "../services/service";
 import { Skeleton } from "@mui/material";
-import Cart from "../components/Cart";
-import Checkout from "../components/Checkout";
+import { useRestaurant } from "../contexts/RestaurantContext";
+import "../styles/menu.css";
 
 const Menu = () => {
+  const { cart, addToCart, setCartOpen } = useRestaurant();
   const [products, setProducts] = useState([]);
   const [menuCategories, setMenuCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showCart, setShowCart] = useState(false);
-  const [hideCart, setHideCart] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // Add state for search query
-  const [bill, setBill] = useState({ null: true });
-  const [cartItems, setCartItems] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || []; // Initialize cart from localStorage
-  });
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const categoriesResponse = await getCategories();
         const productsResponse = await menuData();
-        setMenuCategories(Object.keys(categoriesResponse)); // Extract category names
+        setMenuCategories(Object.keys(categoriesResponse));
         setProducts(productsResponse);
         setLoading(false);
       } catch (error) {
-        console.log(error.message);
+        console.error("Menu data fetch failed:", error.message);
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
-  const addToCart = (product) => {
-    setCartItems((prev) => {
-      const updatedCart = [...prev, { ...product, quantity: 1 }]; // Add quantity field
-      localStorage.setItem("cart", JSON.stringify(updatedCart)); // Save updated cart to localStorage
-      return updatedCart;
-    });
-  };
 
   const filteredProducts = products
     .filter(
@@ -50,198 +36,168 @@ const Menu = () => {
     )
     .filter((product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ); // Filter by search query
-  console.log(hideCart);
+    );
+
+  // Total quantity calculation for the mobile floating cart button
+  const cartTotalQty = Array.isArray(cart) 
+    ? cart.reduce((total, item) => total + (item.quantity || 1), 0)
+    : 0;
+
   return (
-    <div>
-      <div className={`menu-container w-11/12 mx-auto mb-20 p-2 md:p-4`}>
-        <div className="flex flex-col md:flex-row w-full justify-between items-center ">
-          <div className="mt-4 flex justify-around">
-            <h2 className="text-5xl text-pri brandname font-bold">
-              Find The Best Food
-            </h2>
-          </div>
-          <div className="relative">
+    <div className="menu-page-wrapper">
+      <div className="container px-4">
+        {/* Header Block */}
+        <header className="menu-header-section">
+          <h1 className="menu-title">Explore Our Premium Menu</h1>
+          <p className="menu-subtitle">Freshly prepared pure vegetarian delicacies crafted daily with handpicked spices</p>
+          
+          {/* Elegant Search Input */}
+          <div className="search-wrapper">
             <input
-              className="border bg-white rounded-full py-2 px-5 pl-10"
-              placeholder="  Search Here"
+              className="search-input"
+              placeholder="Search dishes..."
               type="text"
-              value={searchQuery} // Bind input to searchQuery state
-              onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <i className="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            <i className="fas fa-search search-icon"></i>
           </div>
-        </div>
+        </header>
 
-        <div className="mt-3">
-          <div className="flex category-div space-x-4 mt-1">
+        {/* Categories Bar */}
+        <div className="categories-container">
+          <button
+            className={`category-pill ${selectedCategory === "All" ? "active" : ""}`}
+            onClick={() => setSelectedCategory("All")}
+          >
+            All Dishes
+          </button>
+          {menuCategories.map((category, index) => (
             <button
-              className={`py-2 px-3 mt-2  category-title w-max rounded-full ${selectedCategory === "All"
-                ? "bg-green-500 text-white"
-                : "bg-gray-200 text-gray-700"
-                }`}
-              onClick={() => setSelectedCategory("All")}
+              key={index}
+              className={`category-pill ${selectedCategory === category ? "active" : ""}`}
+              onClick={() => setSelectedCategory(category)}
             >
-              All
+              {category}
             </button>
-            {menuCategories.map((category, index) => (
-              <button
-                key={index}
-                className={`py-2 px-2 mt-2 category-title w-max rounded-full ${selectedCategory === category
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-200 text-gray-700"
-                  }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
-        <div className="flex flex-col md:flex-row relative">
-          <div className="grid grid-cols-1 md:w- lg:grid-cols-4 gap-6 mt-6 item-cards w-full relative" >
-            {loading
-              ? Array.from({ length: 8 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-white p-0 rounded-3xl shadow-md flex flex-col"
-                >
-                  {/* Image Skeleton */}
-                  <Skeleton
-                    variant="rectangular"
-                    width="100%"
-                    height={160}
-                    className="rounded-t-3xl"
-                  />
 
-                  <div className="px-4 py-4">
-                    {/* Title Skeleton */}
-                    <Skeleton variant="text" width="70%" height={30} />
-
-                    {/* Price Skeleton */}
-                    <Skeleton
-                      variant="text"
-                      width="40%"
-                      height={25}
-                      className="mt-0"
-                    />
-
-                    {/* Description Skeleton */}
-                    <Skeleton
-                      variant="text"
-                      width="90%"
-                      height={20}
-                      className="mt-2"
-                    />
-                    <Skeleton
-                      variant="text"
-                      width="80%"
-                      height={20}
-                      className="mt-0"
-                    />
-
-                    <div>
-                      <div className="flex items-center mt-0">
-                        <Skeleton variant="circular" width={20} height={20} />
-                        <Skeleton
-                          variant="text"
-                          width={40}
-                          height={20}
-                          className="ml-2"
-                        />
-                        <Skeleton
-                          variant="rectangular"
-                          width="50%"
-                          height={40}
-                          className="mt-4 ml-auto rounded-full"
-                        />
-                      </div>
+        {/* Products Grid */}
+        <div className="menu-grid">
+          {loading
+            ? Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="menu-card">
+                  <div className="menu-card-img-container">
+                    <Skeleton variant="rectangular" width="100%" height="100%" />
+                  </div>
+                  <div className="menu-card-details">
+                    <div className="menu-card-header">
+                      <Skeleton variant="text" width="60%" height={28} />
+                      <Skeleton variant="text" width="25%" height={28} />
+                    </div>
+                    <Skeleton variant="text" width="90%" height={20} style={{ margin: "10px 0" }} />
+                    <div className="menu-card-footer">
+                      <Skeleton variant="rectangular" width="30%" height={20} />
+                      <Skeleton variant="rectangular" width="40%" height={36} style={{ borderRadius: "20px" }} />
                     </div>
                   </div>
                 </div>
               ))
-              : filteredProducts.map((item) => (
-                <div
-                  key={item.name}
-                  className="bg-white relative item-card p-none rounded-3xl shadow-md"
-                >
-                  <div className="relative hidden md:block">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={`w-full h-40 object-cover rounded-t-3xl ${item.available ? "" : "outofstock"
-                        }`}
-                    />
-                  </div>
-                  <div className="p-4 pt-0 pb-4">
-                    <h3 className="text-xl flex justify-between font-bold mt-4">
-                      {item.name}
-                      <span className="text-green-500"> Rs.{item.price}</span>
-                    </h3>
-                    <p className="text-gray-500 overflow-x-scroll mb-4">
-                      {item.description.split(" + ").join(", ")}
-                    </p>
-                    <div>
-                      {" "}
-                      <div className="flex-col items-center rating mt-2">
-                        <div>
+            : filteredProducts.map((item) => {
+                const isAvailable = item.available !== false;
+                return (
+                  <article 
+                    key={item._id || item.id || item.name} 
+                    className={`menu-card ${!isAvailable ? "outofstock" : ""}`}
+                  >
+                    {/* Image Area */}
+                    <div className="menu-card-img-container">
+                      <img
+                        src={item.image || "/coverpage/img1.jpeg"}
+                        alt={item.name}
+                        className="menu-card-img"
+                        loading="lazy"
+                      />
+                      
+                      {/* Premium Pure Veg tag overlay */}
+                      <span className="menu-card-badge">
+                        <i className="fas fa-leaf"></i> Veg
+                      </span>
+
+                      {!isAvailable && (
+                        <div className="outofstock-badge">
+                          Out of Stock
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Details Area */}
+                    <div className="menu-card-details">
+                      <div className="menu-card-header">
+                        <h3 className="menu-card-title">{item.name}</h3>
+                        <div className="menu-card-price-row">
+                          <span className="menu-card-price">Rs.{item.price}</span>
+                          <span className="menu-card-price-original">Rs.{Math.round(item.price * 1.25)}</span>
+                        </div>
+                      </div>
+
+                      <p className="menu-card-desc">
+                        {item.description ? item.description.split(" + ").join(", ") : "Prepared fresh daily using pure traditional ingredients."}
+                      </p>
+
+                      <div className="menu-card-footer">
+                        {/* Rating Stars */}
+                        <div className="menu-card-rating">
                           {[...Array(5)].map((_, index) => {
                             const starValue = index + 1;
+                            const rating = item.rating || 4.5;
                             return (
                               <i
                                 key={index}
-                                className={`fas ${item.rating >= starValue
-                                  ? "fa-star text-yellow-500"
-                                  : item.rating >= starValue - 0.5
-                                    ? "fa-star-half-alt text-yellow-500"
-                                    : "fa-star text-gray-300"
-                                  }`}
+                                className={`fas ${
+                                  rating >= starValue
+                                    ? "fa-star"
+                                    : rating >= starValue - 0.5
+                                    ? "fa-star-half-alt"
+                                    : "fa-star"
+                                }`}
+                                style={{ color: rating >= starValue - 0.5 ? "#f1c40f" : "var(--border-color)" }}
                               ></i>
                             );
                           })}
                         </div>
+
+                        {/* Interactive Add button */}
+                        {isAvailable && (
+                          <motion.button
+                            whileTap={{ scale: 0.92 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                            onClick={() => addToCart(item)}
+                            className="menu-add-btn"
+                          >
+                            <i className="fas fa-plus"></i> Add
+                          </motion.button>
+                        )}
                       </div>
-                      <motion.button
-                        whileTap={{ scale: 0.5 }} // Slightly shrink on click
-                        transition={{ type: "spring", stiffness: 200 }}
-                        onClick={() => addToCart(item)}
-                        className="bg-green-500 text-white cart-button py-2 px-4 ml-10 rounded-full mt-4"
-                      >
-                        Add to Cart
-                      </motion.button>
                     </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-          {hideCart ? (
-            <button
-              onClick={() => { setHideCart(false); setShowCart(true) }} // Set `hideCart` to false to show the cart
-              className="fixed bottom-10 right-20 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg"
-            >
-              <i className="fas fa-shopping-cart"></i> Cart
-            </button>
-          ) : (
-            showCart ? (
-              <Cart
-                setBill={setBill}
-                cartItems={cartItems}
-                setCartItems={setCartItems}
-                setShowCart={setShowCart}
-                setHideCart={setHideCart}
-              />
-            ) : (
-              <Checkout
-                bill={bill}
-                setBill={setBill}
-                cartItems={cartItems}
-                setCartItems={setCartItems}
-                setShowCart={setShowCart}
-              />
-            )
-          )}
+                  </article>
+                );
+              })}
         </div>
       </div>
+
+      {/* Floating cart toggle badge (only visible on mobile screens via CSS rules) */}
+      {cartTotalQty > 0 && (
+        <button 
+          className="mobile-cart-badge d-md-none" 
+          onClick={() => setCartOpen(true)}
+          aria-label="Open shopping cart"
+        >
+          <i className="fas fa-shopping-basket"></i>
+          <span className="mobile-cart-count">{cartTotalQty}</span>
+        </button>
+      )}
     </div>
   );
 };
