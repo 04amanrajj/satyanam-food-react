@@ -36,6 +36,7 @@ export const RestaurantProvider = ({ children }) => {
     };
 
     const [cart, setCart] = useState([]);
+    const [cartOpen, setCartOpen] = useState(false);
 
     // Load cart on startup
     useEffect(() => {
@@ -95,6 +96,8 @@ export const RestaurantProvider = ({ children }) => {
                 restaurant, 
                 menu, 
                 cart, 
+                cartOpen,
+                setCartOpen,
                 addToCart, 
                 removeFromCart, 
                 updateQuantity, 
