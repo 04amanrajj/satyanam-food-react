@@ -64,23 +64,53 @@ const Menu = () => {
           </div>
         </header>
 
-        {/* Categories Bar */}
-        <div className="categories-container">
-          <button
-            className={`category-pill ${selectedCategory === "All" ? "active" : ""}`}
-            onClick={() => setSelectedCategory("All")}
-          >
-            All Dishes
-          </button>
-          {menuCategories.map((category, index) => (
+        {/* Redesigned Premium Category Filter Bar */}
+        <div className="filter-wrapper">
+          <div className="categories-scroll-wrapper">
             <button
-              key={index}
-              className={`category-pill ${selectedCategory === category ? "active" : ""}`}
-              onClick={() => setSelectedCategory(category)}
+              className={`filter-tile ${selectedCategory === "All" ? "active" : ""}`}
+              onClick={() => setSelectedCategory("All")}
             >
-              {category}
+              <div className="filter-icon-circle">
+                <i className="fas fa-utensils"></i>
+              </div>
+              <div className="filter-tile-info">
+                <span className="filter-name">All Dishes</span>
+                <span className="filter-count">{products.length} Items</span>
+              </div>
             </button>
-          ))}
+            {menuCategories.map((category, index) => {
+              const count = products.filter(p => p.category === category).length;
+              
+              // Map categories to FontAwesome icons defensively
+              const getCategoryIcon = (catName) => {
+                const name = catName.toLowerCase();
+                if (name.includes("thali")) return "fas fa-bowl-food";
+                if (name.includes("sweet") || name.includes("dessert")) return "fas fa-cookie-bite";
+                if (name.includes("paneer")) return "fas fa-cheese";
+                if (name.includes("chinese") || name.includes("fast") || name.includes("pizza") || name.includes("burger")) return "fas fa-pizza-slice";
+                if (name.includes("drink") || name.includes("beverage")) return "fas fa-glass-cheers";
+                if (name.includes("bread") || name.includes("roti") || name.includes("naan")) return "fas fa-bread-slice";
+                return "fas fa-utensils";
+              };
+
+              return (
+                <button
+                  key={index}
+                  className={`filter-tile ${selectedCategory === category ? "active" : ""}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  <div className="filter-icon-circle">
+                    <i className={getCategoryIcon(category)}></i>
+                  </div>
+                  <div className="filter-tile-info">
+                    <span className="filter-name">{category}</span>
+                    <span className="filter-count">{count} Items</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Products Grid */}
