@@ -27,11 +27,27 @@
   font-weight: 500;
 }
 
-/* Beautiful Interactive Search Bar */
-.search-wrapper {
+/* Combined Search & Filter Row */
+.search-filter-row {
   max-width: 500px;
   margin: 25px auto 0 auto;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-filter-row .search-wrapper {
+  margin: 0;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.search-wrapper {
   position: relative;
+}
+
+.mobile-category-select-icon-btn {
+  display: none; /* Hidden on Desktop */
 }
 
 .search-input {
@@ -203,11 +219,25 @@
   border-radius: var(--radius-full);
 }
 
-/* Grid layout for items inside sections */
+/* Grid layout for items inside sections - exactly 4 columns on desktop */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 1200px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
 }
 
 /* Premium Card Design */
@@ -398,7 +428,7 @@
 }
 
 /* --- Mobile Select Filter Bar & Bottom Sheet Modal --- */
-.mobile-filter-bar {
+.mobile-category-select-icon-btn {
   display: none; /* Hidden on Desktop */
 }
 
@@ -652,33 +682,43 @@
     margin-bottom: 14px;
   }
 
-  /* Mobile Categories Selection Bar */
-  .mobile-filter-bar {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 25px;
-    padding: 0 16px;
-  }
-
-  .mobile-category-select-btn {
-    background: var(--bg-surface);
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-    padding: 12px 24px;
-    border-radius: var(--radius-full);
-    font-weight: 800;
-    font-size: 0.95rem;
+  /* Mobile Combined Search & Filter Row */
+  .search-filter-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    padding: 0 16px;
+    margin-bottom: 25px;
+    width: 100%;
+    max-width: none;
+  }
+
+  .search-filter-row .search-wrapper {
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .mobile-category-select-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    background: var(--bg-surface);
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-size: 1.25rem;
     cursor: pointer;
+    flex-shrink: 0;
     box-shadow: var(--shadow-sm);
     transition: var(--transition-smooth);
   }
 
-  .mobile-category-select-btn:active {
+  .mobile-category-select-icon-btn:active {
     background: var(--color-primary);
     color: white;
+    transform: scale(0.95);
   }
 
   /* Grid turns to compact, side-by-side thali items on mobile! */
