@@ -69,6 +69,13 @@ const Menu = () => {
     }
   };
 
+  // Standardize description to join items using " + "
+  const formatDescription = (desc) => {
+    if (!desc) return "Prepared fresh daily using pure traditional ingredients.";
+    const parts = desc.split(/[+,]/).map(p => p.trim()).filter(Boolean);
+    return parts.join(" + ");
+  };
+
   // Safe Cart Quantity Counter for mobile floating bubble
   const cartTotalQty = Array.isArray(cart) 
     ? cart.reduce((total, item) => total + (item.quantity || 1), 0)
@@ -230,7 +237,7 @@ const Menu = () => {
                             key={item._id || item.id || item.name} 
                             className={`menu-card ${!isAvailable ? "outofstock" : ""}`}
                           >
-                            {/* Image Container */}
+                            {/* Image Container (top on desktop, right on mobile) */}
                             <div className="menu-card-img-container">
                               <img
                                 src={item.image || "/coverpage/img1.jpeg"}
@@ -244,6 +251,16 @@ const Menu = () => {
                                 <i className="fas fa-leaf"></i> Veg
                               </span>
 
+                              {/* Mobile Add to Cart Button overlaying image */}
+                              {isAvailable && (
+                                <button 
+                                  className="menu-add-btn-mobile d-mobile-only" 
+                                  onClick={() => handleAddToCart(item)}
+                                >
+                                  <i className="fas fa-cart-plus"></i>
+                                </button>
+                              )}
+
                               {!isAvailable && (
                                 <div className="outofstock-badge">
                                   Out of Stock
@@ -251,52 +268,36 @@ const Menu = () => {
                               )}
                             </div>
 
-                            {/* Details Container */}
+                            {/* Details Container (bottom on desktop, left on mobile) */}
                             <div className="menu-card-details">
-                              <div className="menu-card-header">
+                              <div className="menu-card-title-row">
                                 <h3 className="menu-card-title">{item.name}</h3>
-                                <div className="menu-card-price-row">
-                                  <span className="menu-card-price">Rs.{item.price}</span>
-                                  <span className="menu-card-price-original">Rs.{Math.round(item.price * 1.25)}</span>
-                                </div>
+                                <span className="rating-pill">
+                                  <i className="fas fa-star"></i> {item.rating || 4.9}
+                                </span>
                               </div>
 
                               <p className="menu-card-desc">
-                                {item.description ? item.description.split(" + ").join(", ") : "Prepared fresh daily using pure traditional ingredients."}
+                                {formatDescription(item.description)}
                               </p>
 
                               <div className="menu-card-footer">
-                                {/* Rating Stars */}
-                                <div className="menu-card-rating">
-                                  {[...Array(5)].map((_, index) => {
-                                    const starValue = index + 1;
-                                    const rating = item.rating || 4.5;
-                                    return (
-                                      <i
-                                        key={index}
-                                        className={`fas ${
-                                          rating >= starValue
-                                            ? "fa-star"
-                                            : rating >= starValue - 0.5
-                                            ? "fa-star-half-alt"
-                                            : "fa-star"
-                                        }`}
-                                        style={{ color: rating >= starValue - 0.5 ? "#f1c40f" : "var(--border-color)" }}
-                                      ></i>
-                                    );
-                                  })}
+                                <div className="menu-card-price-container">
+                                  <div className="original-price-row">
+                                    <span className="menu-card-price-original">Rs.{(item.price * 1.25).toFixed(2)}</span>
+                                    <span className="discount-badge">20% off</span>
+                                  </div>
+                                  <span className="menu-card-price">Rs.{Number(item.price).toFixed(2)}</span>
                                 </div>
 
-                                {/* Add Button */}
+                                {/* Desktop Add to Cart Button */}
                                 {isAvailable && (
-                                  <motion.button
-                                    whileTap={{ scale: 0.92 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                                  <button 
+                                    className="menu-add-btn-desktop d-desktop-only" 
                                     onClick={() => handleAddToCart(item)}
-                                    className="menu-add-btn"
                                   >
-                                    <i className="fas fa-plus"></i> Add
-                                  </motion.button>
+                                    <i className="fas fa-shopping-cart"></i>
+                                  </button>
                                 )}
                               </div>
                             </div>
