@@ -106,28 +106,29 @@ const Menu = () => {
           <h1 className="menu-title">Explore Our Premium Menu</h1>
           <p className="menu-subtitle">Freshly prepared pure vegetarian traditional dishes prepared daily with love</p>
           
-          {/* Elegant Search Input */}
-          <div className="search-wrapper">
-            <input
-              className="search-input"
-              placeholder="Search dishes..."
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <i className="fas fa-search search-icon"></i>
+          {/* Combined Search & Filter Row */}
+          <div className="search-filter-row">
+            <div className="search-wrapper">
+              <input
+                className="search-input"
+                placeholder="Search dishes..."
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <i className="fas fa-search search-icon"></i>
+            </div>
+            
+            <button 
+              className="mobile-category-select-icon-btn" 
+              onClick={() => setIsFilterModalOpen(true)}
+              aria-label="Select Category"
+              title="Select Category"
+            >
+              <i className="fas fa-sliders-h"></i>
+            </button>
           </div>
         </header>
-
-        {/* Mobile Filter Category Select Button */}
-        <div className="mobile-filter-bar">
-          <button 
-            className="mobile-category-select-btn" 
-            onClick={() => setIsFilterModalOpen(true)}
-          >
-            <i className="fas fa-bars-staggered"></i> Select Category
-          </button>
-        </div>
 
         {/* --- Main Grid Layout --- */}
         <div className="menu-desktop-layout">
