@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import "../styles/auth.css";
 
 const CreateAccount = () => {
-  const randomImageNumber = Math.floor(Math.random() * 4) + 1;
+  const [randomImageNumber] = useState(() => Math.floor(Math.random() * 4) + 1);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
@@ -25,27 +26,28 @@ const CreateAccount = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Add form submission logic here
+    // Submission handler placeholder
   };
 
   useEffect(() => {
     if (username) {
+      setCheckingUsername(true);
       const delayDebounceFn = setTimeout(() => {
-        // Simulate an API call to check username availability
-        setCheckingUsername(true);
-        setTimeout(() => {
-          setIsUsernameAvailable(username.length !== 0 && username.length > 6);
-          setCheckingUsername(false);
-        }, 1000);
-      }, 500);
+        setIsUsernameAvailable(username.length >= 6);
+        setCheckingUsername(false);
+      }, 800);
 
       return () => clearTimeout(delayDebounceFn);
+    } else {
+      setIsUsernameAvailable(false);
+      setCheckingUsername(false);
     }
   }, [username]);
 
   const getDaysInMonth = (month, year) => {
     if (month === "February") {
-      return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+      const yr = parseInt(year, 10) || new Date().getFullYear();
+      return yr % 4 === 0 && (yr % 100 !== 0 || yr % 400 === 0) ? 29 : 28;
     }
     return ["April", "June", "September", "November"].includes(month) ? 30 : 31;
   };
@@ -56,10 +58,10 @@ const CreateAccount = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
   const isFormValid = () => {
@@ -81,214 +83,289 @@ const CreateAccount = () => {
     );
   };
 
-  console.log(loginForm);
-
-  const formVariants = {
-    initial: { opacity: 0, y: 50 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-    exit: { opacity: 0, y: -50, transition: { duration: 0.4, ease: "easeIn" } },
+  const pageVariants = {
+    initial: { opacity: 0, scale: 0.96 },
+    animate: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
+    exit: { opacity: 0, scale: 0.96, transition: { duration: 0.4, ease: "easeIn" } }
   };
 
   return (
-    <div className="flex-col md:flex-row flex m-auto w-full justify-center">
+    <div className="auth-page-container">
       <AnimatePresence mode="wait">
         {loginForm ? (
-          <>
-            <motion.div
-              key="loginForm"
-              variants={formVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="flex items-center justify-center"
-            >
-              <>
-                {" "}
-                <div className="bg-white p-8 rounded-3xl md:rounded-l-3xl md:rounded-r-none shadow-lg w-full" style={{ height: "90vh" }}>
-                  <h2 className="text-2xl font-bold mb-6">Login Account</h2>
-                  <form onSubmit={handleFormSubmit}>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="email"
-                          placeholder="example@gmail.com"
-                          className="w-full p-2 border rounded-lg"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                        />
-                        <i className="fas fa-envelope absolute right-3 top-3 text-gray-400"></i>
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Password</label>
-                      <div className="relative">
-                        <input
-                          type={passwordVisible ? "text" : "password"}
-                          placeholder="********"
-                          className="w-full p-2 border rounded-lg"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleChange}
-                        />
-                        <i
-                          className={`fas ${passwordVisible ? "fa-eye-slash" : "fa-eye"
-                            } absolute right-3 top-3 text-gray-400 cursor-pointer`}
-                          onClick={() => setPasswordVisible(!passwordVisible)}
-                        ></i>
-                      </div>
-                    </div>
-                    <button
-                      className="w-full bg-green-500 text-white p-2 rounded-lg"
-                      disabled={!isFormValid()}
-                    >
-                      Login Account
-                    </button>
-                  </form>
-                  <p className="mt-4 text-center text-gray-700">
-                    Don't have an account?{" "}
-                    <span
-                      onClick={() => setLoginForm(false)}
-                      className="text-blue-500 cursor-pointer"
-                    >
-                      Create Account
-                    </span>
-                  </p>
+          <motion.div
+            key="login-card"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="auth-card-wrapper"
+          >
+            {/* Form Column */}
+            <div className="auth-form-side">
+              <header className="auth-header">
+                <h2 className="auth-title">Welcome Back!</h2>
+                <p className="auth-subtitle">Login to your Satyanam account to order delicious thalis</p>
+              </header>
+
+              <form onSubmit={handleFormSubmit}>
+                <div className="auth-group">
+                  <label className="auth-label">Email Address</label>
+                  <div className="auth-input-wrapper">
+                    <input
+                      type="email"
+                      placeholder="example@gmail.com"
+                      className="auth-input auth-input-with-icon"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                    <i className="fas fa-envelope auth-input-icon"></i>
+                  </div>
                 </div>
-              </>
-            </motion.div>
+
+                <div className="auth-group">
+                  <label className="auth-label">Password</label>
+                  <div className="auth-input-wrapper">
+                    <input
+                      type={passwordVisible ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="auth-input auth-input-with-icon"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <i className="fas fa-lock auth-input-icon"></i>
+                    <i
+                      className={`fas ${passwordVisible ? "fa-eye-slash" : "fa-eye"} auth-eye-icon`}
+                      onClick={() => setPasswordVisible(!passwordVisible)}
+                    ></i>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="auth-btn"
+                  disabled={!isFormValid()}
+                >
+                  Login Account
+                </button>
+              </form>
+
+              <p className="auth-switch-text">
+                Don't have an account?{" "}
+                <span
+                  onClick={() => {
+                    setLoginForm(false);
+                    setPasswordVisible(false);
+                  }}
+                  className="auth-switch-btn"
+                >
+                  Create Account
+                </span>
+              </p>
+            </div>
+
+            {/* Visual Block Column */}
             <div
-              className="transition-all hidden md:flex w-3/4 h-min bg-cover rounded-r-3xl bg-center"
+              className="auth-visual-side"
               style={{
                 backgroundImage: `url('/coverpage/img${randomImageNumber}.jpeg')`,
               }}
-            ></div>
-          </>
-        ) : (
-          <>
-            {" "}
-            <div
-              className="hidden md:flex hidden md:flex w-3/4 h-min bg-cover rounded-l-3xl bg-center"
-              style={{
-                backgroundImage: `url('/coverpage/img${randomImageNumber}.jpeg')`,
-              }}
-            ></div>
-            <motion.div
-              key="createAccountForm"
-              variants={formVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="flex items-center justify-center"
             >
-              <div className="flex items-center">
-                <div className="bg-white p-8 rounded-3xl md:rounded-r-3xl md:rounded-l-none shadow-lg w-full" style={{ height: "90vh" }}>
-                  <h2 className="text-2xl font-bold mb-6">Create Account</h2>
-                  <form onSubmit={handleFormSubmit}>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Your Name</label>
-                      <div className="flex space-x-4">
-                        <input
-                          type="text"
-                          placeholder="First Name"
-                          className="w-1/2 p-2 border rounded-lg"
-                          name="firstName"
-                          value={formData.firstName}
-                          onChange={handleChange}
-                        />
-                        <input
-                          type="text"
-                          placeholder="Last Name"
-                          className="w-1/2 p-2 border rounded-lg"
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="email"
-                          placeholder="example@gmail.com"
-                          className="w-full p-2 border rounded-lg"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                        />
-                        <i className="fas fa-envelope absolute right-3 top-3 text-gray-400"></i>
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Username</label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="username123"
-                          className="w-full p-2 border rounded-lg"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
-                        />
-                        <span className="absolute right-3 top-3 text-green-500 flex items-center">
-                          {checkingUsername ? (
-                            <i className="fas fa-spinner fa-spin"></i>
-                          ) : isUsernameAvailable ? (
-                            <i className="fas fa-check-circle"></i>
-                          ) : (
-                            <i className="fas fa-times-circle text-red-500"></i>
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Gender</label>
-                      <select
-                        className="w-full p-2 border rounded-lg"
-                        name="gender"
-                        value={formData.gender}
+              <div className="auth-visual-overlay"></div>
+              <div className="auth-visual-content">
+                <h3 className="auth-visual-title">Satyanaam Food</h3>
+                <p className="auth-visual-desc">Pure Vegetarian. Pure Delight. Fresh traditional meals prepared daily with organic ingredients and love.</p>
+                
+                <div className="auth-visual-features">
+                  <div className="auth-feature-item">
+                    <i className="fas fa-leaf"></i>
+                    <span>100% Pure Vegetarian Thalis</span>
+                  </div>
+                  <div className="auth-feature-item">
+                    <i className="fas fa-truck"></i>
+                    <span>Express Delivery at Your Doorstep</span>
+                  </div>
+                  <div className="auth-feature-item">
+                    <i className="fas fa-fire"></i>
+                    <span>Fresh & Hot Traditional Recipes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="signup-card"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="auth-card-wrapper"
+          >
+            {/* Visual Block Column (Left on signup for organic layout shift!) */}
+            <div
+              className="auth-visual-side"
+              style={{
+                backgroundImage: `url('/coverpage/img${randomImageNumber}.jpeg')`,
+              }}
+            >
+              <div className="auth-visual-overlay"></div>
+              <div className="auth-visual-content">
+                <h3 className="auth-visual-title">Join Our Kitchen!</h3>
+                <p className="auth-visual-desc">Create an account to gain access to member-only rewards, hot meal bundles, and faster checkouts.</p>
+                
+                <div className="auth-visual-features">
+                  <div className="auth-feature-item">
+                    <i className="fas fa-percent"></i>
+                    <span>Exclusive First-Order Discounts</span>
+                  </div>
+                  <div className="auth-feature-item">
+                    <i className="fas fa-clock"></i>
+                    <span>Faster Order Checks & Saves</span>
+                  </div>
+                  <div className="auth-feature-item">
+                    <i className="fas fa-heart"></i>
+                    <span>Save Your Favorite Dishes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Form Column */}
+            <div className="auth-form-side">
+              <header className="auth-header">
+                <h2 className="auth-title">Create Account</h2>
+                <p className="auth-subtitle">Join us to start ordering premium vegetarian foods</p>
+              </header>
+
+              <form onSubmit={handleFormSubmit}>
+                <div className="auth-group">
+                  <label className="auth-label">Your Name</label>
+                  <div className="auth-row">
+                    <div className="auth-row-half">
+                      <input
+                        type="text"
+                        placeholder="First Name"
+                        className="auth-input"
+                        name="firstName"
+                        value={formData.firstName}
                         onChange={handleChange}
-                      >
-                        <option value="">Select Gender</option>
-                        <option>Female</option>
-                        <option>Male</option>
-                      </select>
+                        required
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Birthday</label>
-                      <div className="flex space-x-4">
+                    <div className="auth-row-half">
+                      <input
+                        type="text"
+                        placeholder="Last Name"
+                        className="auth-input"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="auth-row">
+                  <div className="auth-row-half auth-group">
+                    <label className="auth-label">Email Address</label>
+                    <div className="auth-input-wrapper">
+                      <input
+                        type="email"
+                        placeholder="name@email.com"
+                        className="auth-input auth-input-with-icon"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                      <i className="fas fa-envelope auth-input-icon"></i>
+                    </div>
+                  </div>
+
+                  <div className="auth-row-half auth-group">
+                    <label className="auth-label">Username</label>
+                    <div className="auth-input-wrapper">
+                      <input
+                        type="text"
+                        placeholder="username"
+                        className="auth-input auth-input-with-icon"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                      />
+                      <i className="fas fa-user auth-input-icon"></i>
+                      <span className="username-status">
+                        {checkingUsername ? (
+                          <i className="fas fa-spinner fa-spin text-primary"></i>
+                        ) : username ? (
+                          isUsernameAvailable ? (
+                            <i className="fas fa-check-circle text-green-500"></i>
+                          ) : (
+                            <i className="fas fa-times-circle text-red-500" title="Username must be at least 6 characters"></i>
+                          )
+                        ) : null}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="auth-row">
+                  <div className="auth-row-half auth-group">
+                    <label className="auth-label">Gender</label>
+                    <select
+                      className="auth-input auth-select"
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div className="auth-row-half auth-group">
+                    <label className="auth-label">Birthday</label>
+                    <div className="auth-row" style={{ gap: "8px" }}>
+                      <div className="auth-row-third">
                         <select
-                          className="w-1/3 p-2 border rounded-lg"
+                          className="auth-input auth-select"
                           name="day"
                           value={formData.day}
                           onChange={handleChange}
+                          style={{ padding: "12px 8px" }}
+                          required
                         >
-                          <option value="">Day</option>
-                          {days.map((day) => (
-                            <option key={day} value={day}>
-                              {day}
+                          <option value="">DD</option>
+                          {days.map((d) => (
+                            <option key={d} value={d}>
+                              {d}
                             </option>
                           ))}
                         </select>
+                      </div>
+
+                      <div className="auth-row-third">
                         <select
-                          className="w-1/3 p-2 border rounded-lg"
+                          className="auth-input auth-select"
                           name="month"
                           value={formData.month}
                           onChange={(e) => {
                             setSelectedMonth(e.target.value);
                             handleChange(e);
                           }}
+                          style={{ padding: "12px 8px" }}
+                          required
                         >
-                          <option value="">Month</option>
+                          <option value="">MM</option>
                           {[
                             "January",
                             "February",
@@ -302,88 +379,99 @@ const CreateAccount = () => {
                             "October",
                             "November",
                             "December",
-                          ].map((month, index) => (
-                            <option key={index} value={month}>
-                              {month}
+                          ].map((m) => (
+                            <option key={m} value={m}>
+                              {m.substring(0, 3)}
                             </option>
                           ))}
                         </select>
+                      </div>
+
+                      <div className="auth-row-third">
                         <select
-                          className="w-1/3 p-2 border rounded-lg"
+                          className="auth-input auth-select"
                           name="year"
                           value={formData.year}
                           onChange={(e) => {
                             setSelectedYear(e.target.value);
                             handleChange(e);
                           }}
+                          style={{ padding: "12px 8px" }}
+                          required
                         >
-                          <option value="">Year</option>
+                          <option value="">YYYY</option>
                           {Array.from(
-                            { length: 100 },
-                            (_, i) => new Date().getFullYear() - i
-                          ).map((year) => (
-                            <option key={year} value={year}>
-                              {year}
+                            { length: 80 },
+                            (_, i) => new Date().getFullYear() - 10 - i
+                          ).map((yr) => (
+                            <option key={yr} value={yr}>
+                              {yr}
                             </option>
                           ))}
                         </select>
                       </div>
                     </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Password</label>
-                      <div className="relative">
-                        <input
-                          type={passwordVisible ? "text" : "password"}
-                          placeholder="********"
-                          className="w-full p-2 border rounded-lg"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleChange}
-                        />
-                        <i
-                          className={`fas ${passwordVisible ? "fa-eye-slash" : "fa-eye"
-                            } absolute right-3 top-3 text-gray-400 cursor-pointer`}
-                          onClick={() => setPasswordVisible(!passwordVisible)}
-                        ></i>
-                      </div>
-                    </div>
-                    <div className="mb-4 flex items-center">
-                      <input
-                        type="checkbox"
-                        className="mr-2"
-                        name="agree"
-                        checked={formData.agree}
-                        onChange={handleChange}
-                      />
-                      <label className="text-gray-700">
-                        Agree with{" "}
-                        <a href=" " className="text-blue-500">
-                          Terms & Conditions
-                        </a>
-                      </label>
-                    </div>
-                    <button
-                      className="w-full bg-green-500 text-white p-2 rounded-lg"
-                      disabled={!isFormValid()}
-                    >
-                      Create Account
-                    </button>
-                  </form>
-                  <p className="mt-4 text-center text-gray-700">
-                    Already have an account?{" "}
-                    <Link
-                      onClick={() => {
-                        setLoginForm(true);
-                      }}
-                      className="text-blue-500"
-                    >
-                      Login to Account
-                    </Link>
-                  </p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </>
+
+                <div className="auth-group">
+                  <label className="auth-label">Password</label>
+                  <div className="auth-input-wrapper">
+                    <input
+                      type={passwordVisible ? "text" : "password"}
+                      placeholder="Create a strong password"
+                      className="auth-input auth-input-with-icon"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <i className="fas fa-lock auth-input-icon"></i>
+                    <i
+                      className={`fas ${passwordVisible ? "fa-eye-slash" : "fa-eye"} auth-eye-icon`}
+                      onClick={() => setPasswordVisible(!passwordVisible)}
+                    ></i>
+                  </div>
+                </div>
+
+                <div className="auth-checkbox-group">
+                  <input
+                    type="checkbox"
+                    className="auth-checkbox"
+                    name="agree"
+                    checked={formData.agree}
+                    onChange={handleChange}
+                    id="terms-agree"
+                    required
+                  />
+                  <label htmlFor="terms-agree" className="auth-checkbox-label">
+                    I agree to the <Link to="/terms">Terms & Conditions</Link> and <Link to="/privacy">Privacy Policy</Link>
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  className="auth-btn"
+                  disabled={!isFormValid()}
+                >
+                  Create Account
+                </button>
+              </form>
+
+              <p className="auth-switch-text">
+                Already have an account?{" "}
+                <span
+                  onClick={() => {
+                    setLoginForm(true);
+                    setPasswordVisible(false);
+                  }}
+                  className="auth-switch-btn"
+                >
+                  Login to Account
+                </span>
+              </p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
