@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import "../styles/auth.css";
 
-const CreateAccount = () => {
+const CreateAccount = ({ onAuthSuccess }) => {
   const [randomImageNumber] = useState(() => Math.floor(Math.random() * 4) + 1);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -12,10 +13,15 @@ const CreateAccount = () => {
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [loginForm, setLoginForm] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
     gender: "",
     day: "",
     month: "",
@@ -24,9 +30,91 @@ const CreateAccount = () => {
     agree: false,
   });
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Submission handler placeholder
+    setErrorMessage("");
+    setSuccessMessage("");
+    setSubmitLoading(true);
+
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+
+    if (loginForm) {
+      // --- Login Logic ---
+      const input = formData.email.trim();
+      const password = formData.password.trim();
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^\d{10}$/;
+
+      let requestData = {};
+      if (emailRegex.test(input)) {
+        requestData = { email: input, password };
+      } else if (phoneRegex.test(input)) {
+        requestData = { phone: input, password };
+      } else {
+        setErrorMessage("Please enter a valid email or 10-digit phone number.");
+        setSubmitLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.post(`${baseURL}/user/login`, requestData);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("person", JSON.stringify(response.data.user));
+        
+        setSuccessMessage("Login successful! Welcome back.");
+        if (onAuthSuccess) {
+          setTimeout(() => {
+            onAuthSuccess();
+          }, 1000);
+        }
+      } catch (error) {
+        console.error(error);
+        setErrorMessage(
+          error.response?.data?.message || "Invalid credentials. Please try again."
+        );
+      } finally {
+        setSubmitLoading(false);
+      }
+    } else {
+      // --- Signup Logic ---
+      const name = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+      const email = formData.email.trim();
+      const phone = formData.phone.trim();
+      const password = formData.password;
+
+      if (password.length < 8) {
+        setErrorMessage("Password must be at least 8 characters long");
+        setSubmitLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.post(`${baseURL}/user/register`, {
+          name,
+          email,
+          phone,
+          role: "user",
+          password,
+        });
+
+        console.log(response);
+        setSuccessMessage("Account created successfully! Switching to login...");
+        setTimeout(() => {
+          setLoginForm(true);
+          setErrorMessage("");
+          setSuccessMessage("");
+        }, 2000);
+      } catch (error) {
+        console.error(error);
+        setErrorMessage(
+          error.response?.data?.message || "Registration failed. Please try again."
+        );
+      } finally {
+        setSubmitLoading(false);
+      }
+    }
   };
 
   useEffect(() => {
@@ -72,6 +160,7 @@ const CreateAccount = () => {
       formData.firstName.trim() !== "" &&
       formData.lastName.trim() !== "" &&
       formData.email.trim() !== "" &&
+      formData.phone.trim() !== "" &&
       username.trim() !== "" &&
       isUsernameAvailable &&
       formData.gender.trim() !== "" &&
@@ -108,20 +197,32 @@ const CreateAccount = () => {
                 <p className="auth-subtitle">Login to your Satyanam account to order delicious thalis</p>
               </header>
 
+              {errorMessage && (
+                <div style={{ color: "#e74c3c", background: "rgba(231,76,60,0.1)", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontWeight: "600", fontSize: "0.9rem" }}>
+                  <i className="fas fa-exclamation-circle" style={{ marginRight: "8px" }}></i> {errorMessage}
+                </div>
+              )}
+
+              {successMessage && (
+                <div style={{ color: "#27ae60", background: "rgba(39,174,96,0.1)", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontWeight: "600", fontSize: "0.9rem" }}>
+                  <i className="fas fa-check-circle" style={{ marginRight: "8px" }}></i> {successMessage}
+                </div>
+              )}
+
               <form onSubmit={handleFormSubmit}>
                 <div className="auth-group">
-                  <label className="auth-label">Email Address</label>
+                  <label className="auth-label">Email or Phone Number</label>
                   <div className="auth-input-wrapper">
                     <input
-                      type="email"
-                      placeholder="example@gmail.com"
+                      type="text"
+                      placeholder="Email address or 10-digit phone"
                       className="auth-input auth-input-with-icon"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       required
                     />
-                    <i className="fas fa-envelope auth-input-icon"></i>
+                    <i className="fas fa-user-circle auth-input-icon"></i>
                   </div>
                 </div>
 
@@ -148,9 +249,9 @@ const CreateAccount = () => {
                 <button
                   type="submit"
                   className="auth-btn"
-                  disabled={!isFormValid()}
+                  disabled={!isFormValid() || submitLoading}
                 >
-                  Login Account
+                  {submitLoading ? "Logging in..." : "Login Account"}
                 </button>
               </form>
 
@@ -160,6 +261,8 @@ const CreateAccount = () => {
                   onClick={() => {
                     setLoginForm(false);
                     setPasswordVisible(false);
+                    setErrorMessage("");
+                    setSuccessMessage("");
                   }}
                   className="auth-switch-btn"
                 >
@@ -206,7 +309,7 @@ const CreateAccount = () => {
             exit="exit"
             className="auth-card-wrapper"
           >
-            {/* Visual Block Column (Left on signup for organic layout shift!) */}
+            {/* Visual Block Column (Left on signup) */}
             <div
               className="auth-visual-side"
               style={{
@@ -241,6 +344,18 @@ const CreateAccount = () => {
                 <h2 className="auth-title">Create Account</h2>
                 <p className="auth-subtitle">Join us to start ordering premium vegetarian foods</p>
               </header>
+
+              {errorMessage && (
+                <div style={{ color: "#e74c3c", background: "rgba(231,76,60,0.1)", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontWeight: "600", fontSize: "0.9rem" }}>
+                  <i className="fas fa-exclamation-circle" style={{ marginRight: "8px" }}></i> {errorMessage}
+                </div>
+              )}
+
+              {successMessage && (
+                <div style={{ color: "#27ae60", background: "rgba(39,174,96,0.1)", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontWeight: "600", fontSize: "0.9rem" }}>
+                  <i className="fas fa-check-circle" style={{ marginRight: "8px" }}></i> {successMessage}
+                </div>
+              )}
 
               <form onSubmit={handleFormSubmit}>
                 <div className="auth-group">
@@ -289,6 +404,24 @@ const CreateAccount = () => {
                   </div>
 
                   <div className="auth-row-half auth-group">
+                    <label className="auth-label">Phone Number</label>
+                    <div className="auth-input-wrapper">
+                      <input
+                        type="tel"
+                        placeholder="10-digit number"
+                        className="auth-input auth-input-with-icon"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                      />
+                      <i className="fas fa-phone auth-input-icon"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="auth-row">
+                  <div className="auth-row-half auth-group">
                     <label className="auth-label">Username</label>
                     <div className="auth-input-wrapper">
                       <input
@@ -313,9 +446,7 @@ const CreateAccount = () => {
                       </span>
                     </div>
                   </div>
-                </div>
 
-                <div className="auth-row">
                   <div className="auth-row-half auth-group">
                     <label className="auth-label">Gender</label>
                     <select
@@ -331,85 +462,85 @@ const CreateAccount = () => {
                       <option value="Other">Other</option>
                     </select>
                   </div>
+                </div>
 
-                  <div className="auth-row-half auth-group">
-                    <label className="auth-label">Birthday</label>
-                    <div className="auth-row" style={{ gap: "8px" }}>
-                      <div className="auth-row-third">
-                        <select
-                          className="auth-input auth-select"
-                          name="day"
-                          value={formData.day}
-                          onChange={handleChange}
-                          style={{ padding: "12px 8px" }}
-                          required
-                        >
-                          <option value="">DD</option>
-                          {days.map((d) => (
-                            <option key={d} value={d}>
-                              {d}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                <div className="auth-group">
+                  <label className="auth-label">Birthday</label>
+                  <div className="auth-row" style={{ gap: "8px" }}>
+                    <div className="auth-row-third">
+                      <select
+                        className="auth-input auth-select"
+                        name="day"
+                        value={formData.day}
+                        onChange={handleChange}
+                        style={{ padding: "12px 8px" }}
+                        required
+                      >
+                        <option value="">DD</option>
+                        {days.map((d) => (
+                          <option key={d} value={d}>
+                            {d}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                      <div className="auth-row-third">
-                        <select
-                          className="auth-input auth-select"
-                          name="month"
-                          value={formData.month}
-                          onChange={(e) => {
-                            setSelectedMonth(e.target.value);
-                            handleChange(e);
-                          }}
-                          style={{ padding: "12px 8px" }}
-                          required
-                        >
-                          <option value="">MM</option>
-                          {[
-                            "January",
-                            "February",
-                            "March",
-                            "April",
-                            "May",
-                            "June",
-                            "July",
-                            "August",
-                            "September",
-                            "October",
-                            "November",
-                            "December",
-                          ].map((m) => (
-                            <option key={m} value={m}>
-                              {m.substring(0, 3)}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                    <div className="auth-row-third">
+                      <select
+                        className="auth-input auth-select"
+                        name="month"
+                        value={formData.month}
+                        onChange={(e) => {
+                          setSelectedMonth(e.target.value);
+                          handleChange(e);
+                        }}
+                        style={{ padding: "12px 8px" }}
+                        required
+                      >
+                        <option value="">MM</option>
+                        {[
+                          "January",
+                          "February",
+                          "March",
+                          "April",
+                          "May",
+                          "June",
+                          "July",
+                          "August",
+                          "September",
+                          "October",
+                          "November",
+                          "December",
+                        ].map((m) => (
+                          <option key={m} value={m}>
+                            {m.substring(0, 3)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                      <div className="auth-row-third">
-                        <select
-                          className="auth-input auth-select"
-                          name="year"
-                          value={formData.year}
-                          onChange={(e) => {
-                            setSelectedYear(e.target.value);
-                            handleChange(e);
-                          }}
-                          style={{ padding: "12px 8px" }}
-                          required
-                        >
-                          <option value="">YYYY</option>
-                          {Array.from(
-                            { length: 80 },
-                            (_, i) => new Date().getFullYear() - 10 - i
-                          ).map((yr) => (
-                            <option key={yr} value={yr}>
-                              {yr}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                    <div className="auth-row-third">
+                      <select
+                        className="auth-input auth-select"
+                        name="year"
+                        value={formData.year}
+                        onChange={(e) => {
+                          setSelectedYear(e.target.value);
+                          handleChange(e);
+                        }}
+                        style={{ padding: "12px 8px" }}
+                        required
+                      >
+                        <option value="">YYYY</option>
+                        {Array.from(
+                          { length: 80 },
+                          (_, i) => new Date().getFullYear() - 10 - i
+                        ).map((yr) => (
+                          <option key={yr} value={yr}>
+                            {yr}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -419,7 +550,7 @@ const CreateAccount = () => {
                   <div className="auth-input-wrapper">
                     <input
                       type={passwordVisible ? "text" : "password"}
-                      placeholder="Create a strong password"
+                      placeholder="Create a strong password (min 8 chars)"
                       className="auth-input auth-input-with-icon"
                       name="password"
                       value={formData.password}
@@ -452,9 +583,9 @@ const CreateAccount = () => {
                 <button
                   type="submit"
                   className="auth-btn"
-                  disabled={!isFormValid()}
+                  disabled={!isFormValid() || submitLoading}
                 >
-                  Create Account
+                  {submitLoading ? "Creating Account..." : "Create Account"}
                 </button>
               </form>
 
@@ -464,6 +595,8 @@ const CreateAccount = () => {
                   onClick={() => {
                     setLoginForm(true);
                     setPasswordVisible(false);
+                    setErrorMessage("");
+                    setSuccessMessage("");
                   }}
                   className="auth-switch-btn"
                 >
