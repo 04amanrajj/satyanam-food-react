@@ -132,6 +132,13 @@ const Profile = () => {
       order.status?.toLowerCase() === "prepared"
   );
 
+  const pastOrders = orders.filter(
+    (order) =>
+      order.status?.toLowerCase() !== "pending" &&
+      order.status?.toLowerCase() !== "preparing" &&
+      order.status?.toLowerCase() !== "prepared"
+  );
+
   return (
     <div className="profile-container">
       {/* Profile Header Card */}
@@ -164,12 +171,126 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Basic active orders title */}
-      <div className="profile-orders-section" style={{ gridTemplateColumns: "1fr" }}>
+      {/* Main Grid: Active Orders vs Past Orders */}
+      <div className="profile-orders-section">
+        {/* Column 1: Active Orders */}
         <div>
           <h4 className="orders-column-title">
             <i className="fas fa-route"></i> Active Tracked Orders ({activeOrders.length})
           </h4>
+
+          {loading && orders.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "40px", color: "var(--secondary-text-color)" }}>
+              <i className="fas fa-spinner fa-spin" style={{ fontSize: "2rem", color: "var(--color-primary)" }}></i>
+              <p style={{ marginTop: "12px", fontWeight: "600" }}>Loading active order trackers...</p>
+            </div>
+          ) : activeOrders.length === 0 ? (
+            <div className="order-card" style={{ textAlign: "center", padding: "40px", color: "var(--secondary-text-color)" }}>
+              <i className="fas fa-utensils" style={{ fontSize: "2.5rem", color: "var(--border-color)", marginBottom: "16px" }}></i>
+              <p style={{ fontWeight: "700" }}>No active order trackers right now!</p>
+              <p style={{ fontSize: "0.88rem", marginTop: "4px" }}>Order a hot thali from the Menu page to track it here live.</p>
+            </div>
+          ) : (
+            activeOrders.map((order) => (
+              <article key={order._id} className="order-card">
+                <div className="order-card-header">
+                  <div>
+                    <span className="order-id">ORDER #{order._id}</span>
+                    <div style={{ fontSize: "0.85rem", color: "var(--secondary-text-color)", marginTop: "4px" }}>
+                      Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Today"}
+                    </div>
+                  </div>
+                  <span className={`order-badge ${order.status?.toLowerCase() || "pending"}`}>
+                    {order.status || "Pending"}
+                  </span>
+                </div>
+
+                <table className="order-table">
+                  <thead>
+                    <tr>
+                      <th>Item Description</th>
+                      <th style={{ textAlign: "center" }}>Qty</th>
+                      <th style={{ textAlign: "right" }}>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order.itemsDetail?.map((item, idx) => (
+                      <tr key={idx}>
+                        <td>{item.name}</td>
+                        <td style={{ textAlign: "center" }}>{item.quantity}</td>
+                        <td style={{ textAlign: "right" }}>Rs.{(item.price * 0.8).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <div className="order-card-footer">
+                  <span className="order-total-label">Total Amount Paid</span>
+                  <span className="order-total-price">Rs.{Number(order.totalprice || 0).toFixed(2)}</span>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+
+        {/* Column 2: Past Orders */}
+        <div>
+          <h4 className="orders-column-title">
+            <i className="fas fa-history"></i> Past Order History
+          </h4>
+
+          {loading && orders.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "40px", color: "var(--secondary-text-color)" }}>
+              <i className="fas fa-spinner fa-spin" style={{ fontSize: "2rem", color: "var(--color-primary)" }}></i>
+              <p style={{ marginTop: "12px", fontWeight: "600" }}>Loading past thalis...</p>
+            </div>
+          ) : pastOrders.length === 0 ? (
+            <div className="order-card" style={{ textAlign: "center", padding: "40px", color: "var(--secondary-text-color)" }}>
+              <i className="fas fa-archive" style={{ fontSize: "2.5rem", color: "var(--border-color)", marginBottom: "16px" }}></i>
+              <p style={{ fontWeight: "700" }}>No past orders found!</p>
+              <p style={{ fontSize: "0.88rem", marginTop: "4px" }}>Your completed past orders will appear here.</p>
+            </div>
+          ) : (
+            pastOrders.map((order) => (
+              <article key={order._id} className="order-card">
+                <div className="order-card-header">
+                  <div>
+                    <span className="order-id">ORDER #{order._id}</span>
+                    <div style={{ fontSize: "0.85rem", color: "var(--secondary-text-color)", marginTop: "4px" }}>
+                      Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Past date"}
+                    </div>
+                  </div>
+                  <span className={`order-badge ${order.status?.toLowerCase() || "completed"}`}>
+                    {order.status || "Completed"}
+                  </span>
+                </div>
+
+                <table className="order-table">
+                  <thead>
+                    <tr>
+                      <th>Item Description</th>
+                      <th style={{ textAlign: "center" }}>Qty</th>
+                      <th style={{ textAlign: "right" }}>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order.itemsDetail?.map((item, idx) => (
+                      <tr key={idx}>
+                        <td>{item.name}</td>
+                        <td style={{ textAlign: "center" }}>{item.quantity}</td>
+                        <td style={{ textAlign: "right" }}>Rs.{(item.price * 0.8).toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <div className="order-card-footer">
+                  <span className="order-total-label">Total Amount Paid</span>
+                  <span className="order-total-price">Rs.{Number(order.totalprice || 0).toFixed(2)}</span>
+                </div>
+              </article>
+            ))
+          )}
         </div>
       </div>
     </div>
