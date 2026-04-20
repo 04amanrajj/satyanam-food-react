@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { useRestaurant } from "../contexts/RestaurantContext";
 import AuthForm from "../components/AuthForm";
 import "../styles/profile.css";
 
 const Profile = () => {
+  const { menu } = useRestaurant();
   const [token, setToken] = useState(() => localStorage.getItem("token") || "");
   const [user, setUser] = useState(() => {
     const cached = localStorage.getItem("user") || localStorage.getItem("person");
@@ -57,40 +59,34 @@ const Profile = () => {
 
       const ordersData = ordersRes.data || [];
 
-      // 3. For each order, fetch dynamic menu details for items
-      const populatedOrders = [];
-      for (const order of ordersData) {
-        const itemsDetail = [];
-        for (const item of order.items || []) {
-          try {
-            const itemRes = await axios.get(`${baseURL}/menu/${item.itemid}`, {
-              headers: { Authorization: authToken }
-            });
-            if (itemRes.data?.data?.[0]) {
-              itemsDetail.push({
-                ...itemRes.data.data[0],
-                quantity: item.quantity
-              });
-            } else {
-              itemsDetail.push({
-                name: "Delicious Thali Item",
-                price: item.price || 150,
-                quantity: item.quantity
-              });
-            }
-          } catch (e) {
-            itemsDetail.push({
-              name: "Delicious Thali Item",
-              price: item.price || 150,
-              quantity: item.quantity
-            });
-          }
+      // 3. For each order, look up details in the cached menu array to avoid Rate Limits (429)
+      let fullMenu = menu || [];
+      if (fullMenu.length === 0) {
+        try {
+          const menuRes = await axios.get(`${baseURL}/menu`);
+          fullMenu = menuRes.data?.data || [];
+        } catch (e) {
+          console.error("Failed to load fallback menu list:", e);
         }
-        populatedOrders.push({
-          ...order,
-          itemsDetail
-        });
       }
+
+      // Map for O(1) in-memory lookups
+      const menuMap = new Map(fullMenu.map((m) => [m._id || m.id, m]));
+
+      const populatedOrders = ordersData.map((order) => {
+        const itemsDetail = (order.items || []).map((item) => {
+          const menuInfo = menuMap.get(item.itemid);
+          return {
+            name: menuInfo?.name || "Delicious Thali Item",
+            price: menuInfo?.price || item.price || 150,
+            quantity: item.quantity,
+          };
+        });
+        return {
+          ...order,
+          itemsDetail,
+        };
+      });
 
       setOrders(populatedOrders);
     } catch (err) {
@@ -99,7 +95,7 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [menu]);
 
   useEffect(() => {
     if (token && user) {
