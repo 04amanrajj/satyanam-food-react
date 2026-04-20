@@ -30,7 +30,7 @@ const Profile = () => {
     const baseURL = "https://satyanaam-food-backend.onrender.com";
 
     try {
-      // 1. Fetch fresh user details
+      // 1. Fetch live user details
       let userData = currentUser;
       try {
         const userRes = await axios.get(`${baseURL}/user`, {
@@ -57,7 +57,7 @@ const Profile = () => {
 
       const ordersData = ordersRes.data || [];
 
-      // 3. Populate thali item names
+      // 3. For each order, fetch dynamic menu details for items
       const populatedOrders = [];
       for (const order of ordersData) {
         const itemsDetail = [];
@@ -95,7 +95,7 @@ const Profile = () => {
       setOrders(populatedOrders);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch account order records.");
+      setError(err.response?.data?.message || "Failed to load order history details.");
     } finally {
       setLoading(false);
     }
@@ -124,7 +124,7 @@ const Profile = () => {
     );
   }
 
-  // Active vs completed past orders
+  // Categories of orders
   const activeOrders = orders.filter(
     (order) =>
       order.status?.toLowerCase() === "pending" ||
@@ -138,6 +138,15 @@ const Profile = () => {
       order.status?.toLowerCase() !== "preparing" &&
       order.status?.toLowerCase() !== "prepared"
   );
+
+  // Status index for progress bar
+  const getStatusStep = (status) => {
+    const st = status?.toLowerCase();
+    if (st === "preparing") return 1;
+    if (st === "prepared") return 2;
+    if (st === "delivered") return 3;
+    return 0; // pending
+  };
 
   return (
     <div className="profile-container">
@@ -173,10 +182,10 @@ const Profile = () => {
 
       {/* Main Grid: Active Orders vs Past Orders */}
       <div className="profile-orders-section">
-        {/* Column 1: Active Orders */}
+        {/* Column 1: Active Orders & Tracker */}
         <div>
           <h4 className="orders-column-title">
-            <i className="fas fa-route"></i> Active Tracked Orders ({activeOrders.length})
+            <i className="fas fa-route"></i> Active Tracked Orders
           </h4>
 
           {loading && orders.length === 0 ? (
@@ -191,49 +200,90 @@ const Profile = () => {
               <p style={{ fontSize: "0.88rem", marginTop: "4px" }}>Order a hot thali from the Menu page to track it here live.</p>
             </div>
           ) : (
-            activeOrders.map((order) => (
-              <article key={order._id} className="order-card">
-                <div className="order-card-header">
-                  <div>
-                    <span className="order-id">ORDER #{order._id}</span>
-                    <div style={{ fontSize: "0.85rem", color: "var(--secondary-text-color)", marginTop: "4px" }}>
-                      Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Today"}
+            activeOrders.map((order) => {
+              const currentStep = getStatusStep(order.status);
+              const progressWidth = `${(currentStep / 3) * 100}%`;
+
+              return (
+                <article key={order._id} className="order-card">
+                  <div className="order-card-header">
+                    <div>
+                      <span className="order-id">ORDER #{order._id}</span>
+                      <div style={{ fontSize: "0.85rem", color: "var(--secondary-text-color)", marginTop: "4px" }}>
+                        Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "Today"}
+                      </div>
+                    </div>
+                    <span className={`order-badge ${order.status?.toLowerCase() || "pending"}`}>
+                      {order.status || "Pending"}
+                    </span>
+                  </div>
+
+                  {/* Step Progress Tracker */}
+                  <div className="tracking-container">
+                    <div className="tracking-line">
+                      <div className="tracking-line-progress" style={{ width: progressWidth }}></div>
+                    </div>
+
+                    <div className={`tracking-step ${currentStep >= 0 ? "active" : ""}`}>
+                      <div className="tracking-dot">
+                        <i className="fas fa-clipboard-check"></i>
+                      </div>
+                      <span className="tracking-label">Confirmed</span>
+                    </div>
+
+                    <div className={`tracking-step ${currentStep >= 1 ? "active" : ""}`}>
+                      <div className="tracking-dot">
+                        <i className="fas fa-fire"></i>
+                      </div>
+                      <span className="tracking-label">Cooking</span>
+                    </div>
+
+                    <div className={`tracking-step ${currentStep >= 2 ? "active" : ""}`}>
+                      <div className="tracking-dot">
+                        <i className="fas fa-people-carry"></i>
+                      </div>
+                      <span className="tracking-label">Prepared</span>
+                    </div>
+
+                    <div className={`tracking-step ${currentStep >= 3 ? "active" : ""}`}>
+                      <div className="tracking-dot">
+                        <i className="fas fa-check-double"></i>
+                      </div>
+                      <span className="tracking-label">Delivered</span>
                     </div>
                   </div>
-                  <span className={`order-badge ${order.status?.toLowerCase() || "pending"}`}>
-                    {order.status || "Pending"}
-                  </span>
-                </div>
 
-                <table className="order-table">
-                  <thead>
-                    <tr>
-                      <th>Item Description</th>
-                      <th style={{ textAlign: "center" }}>Qty</th>
-                      <th style={{ textAlign: "right" }}>Price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {order.itemsDetail?.map((item, idx) => (
-                      <tr key={idx}>
-                        <td>{item.name}</td>
-                        <td style={{ textAlign: "center" }}>{item.quantity}</td>
-                        <td style={{ textAlign: "right" }}>Rs.{(item.price * 0.8).toFixed(2)}</td>
+                  {/* Item Details Table */}
+                  <table className="order-table">
+                    <thead>
+                      <tr>
+                        <th>Item Description</th>
+                        <th style={{ textAlign: "center" }}>Qty</th>
+                        <th style={{ textAlign: "right" }}>Price</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {order.itemsDetail?.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>{item.name}</td>
+                          <td style={{ textAlign: "center" }}>{item.quantity}</td>
+                          <td style={{ textAlign: "right" }}>Rs.{(item.price * 0.8).toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
 
-                <div className="order-card-footer">
-                  <span className="order-total-label">Total Amount Paid</span>
-                  <span className="order-total-price">Rs.{Number(order.totalprice || 0).toFixed(2)}</span>
-                </div>
-              </article>
-            ))
+                  <div className="order-card-footer">
+                    <span className="order-total-label">Total Amount Paid</span>
+                    <span className="order-total-price">Rs.{Number(order.totalprice || 0).toFixed(2)}</span>
+                  </div>
+                </article>
+              );
+            })
           )}
         </div>
 
-        {/* Column 2: Past Orders */}
+        {/* Column 2: Order History */}
         <div>
           <h4 className="orders-column-title">
             <i className="fas fa-history"></i> Past Order History
