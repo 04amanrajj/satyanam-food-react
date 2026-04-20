@@ -27,6 +27,7 @@ const CreateAccount = ({ onAuthSuccess }) => {
     month: "",
     year: "",
     password: "",
+    confirmPassword: "",
     agree: false,
   });
 
@@ -86,6 +87,12 @@ const CreateAccount = ({ onAuthSuccess }) => {
 
       if (password.length < 8) {
         setErrorMessage("Password must be at least 8 characters long");
+        setSubmitLoading(false);
+        return;
+      }
+
+      if (password !== formData.confirmPassword) {
+        setErrorMessage("Passwords do not match");
         setSubmitLoading(false);
         return;
       }
@@ -168,6 +175,7 @@ const CreateAccount = ({ onAuthSuccess }) => {
       formData.month.trim() !== "" &&
       formData.year.trim() !== "" &&
       formData.password.trim() !== "" &&
+      formData.confirmPassword.trim() !== "" &&
       formData.agree
     );
   };
@@ -545,23 +553,41 @@ const CreateAccount = ({ onAuthSuccess }) => {
                   </div>
                 </div>
 
-                <div className="auth-group">
-                  <label className="auth-label">Password</label>
-                  <div className="auth-input-wrapper">
-                    <input
-                      type={passwordVisible ? "text" : "password"}
-                      placeholder="Create a strong password (min 8 chars)"
-                      className="auth-input auth-input-with-icon"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                    />
-                    <i className="fas fa-lock auth-input-icon"></i>
-                    <i
-                      className={`fas ${passwordVisible ? "fa-eye-slash" : "fa-eye"} auth-eye-icon`}
-                      onClick={() => setPasswordVisible(!passwordVisible)}
-                    ></i>
+                <div className="auth-row">
+                  <div className="auth-row-half auth-group">
+                    <label className="auth-label">Password</label>
+                    <div className="auth-input-wrapper">
+                      <input
+                        type={passwordVisible ? "text" : "password"}
+                        placeholder="Min 8 chars"
+                        className="auth-input auth-input-with-icon"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                      />
+                      <i className="fas fa-lock auth-input-icon"></i>
+                    </div>
+                  </div>
+
+                  <div className="auth-row-half auth-group">
+                    <label className="auth-label">Confirm Password</label>
+                    <div className="auth-input-wrapper">
+                      <input
+                        type={passwordVisible ? "text" : "password"}
+                        placeholder="Confirm password"
+                        className="auth-input auth-input-with-icon"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                      />
+                      <i className="fas fa-lock auth-input-icon"></i>
+                      <i
+                        className={`fas ${passwordVisible ? "fa-eye-slash" : "fa-eye"} auth-eye-icon`}
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                      ></i>
+                    </div>
                   </div>
                 </div>
 
