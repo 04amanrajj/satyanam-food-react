@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useRestaurant } from "../contexts/RestaurantContext";
 import AuthForm from "../components/AuthForm";
+import AdminDashboard from "./AdminDashboard";
 import "../styles/profile.css";
 
 const Profile = () => {
@@ -102,6 +103,11 @@ const Profile = () => {
       fetchProfileData(token, user);
     }
   }, [token, user, fetchProfileData]);
+
+  // If user is admin, render the Admin Dashboard instead
+  if (token && user?.role === "admin") {
+    return <AdminDashboard token={token} user={user} handleLogout={handleLogout} />;
+  }
 
   // If user is not authenticated, render login/signup
   if (!token) {
