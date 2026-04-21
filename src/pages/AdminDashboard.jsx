@@ -9,6 +9,12 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [errorOrders, setErrorOrders] = useState("");
 
+  // Items State
+  const [items, setItems] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(false);
+  const [errorItems, setErrorItems] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Track collapse states of order details cards
   const [expandedOrders, setExpandedOrders] = useState({});
 
@@ -50,7 +56,6 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
         { status: newStatus },
         { headers: { Authorization: token } }
       );
-      // Success! Reload active orders
       fetchOrders(orderSubTab);
     } catch (err) {
       console.error(err);
@@ -59,11 +64,64 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
     }
   };
 
+  const fetchItems = useCallback(async (query = "") => {
+    setLoadingItems(true);
+    setErrorItems("");
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+
+    try {
+      // The API base URL: /menu?q=query (or just /menu)
+      const url = query ? `${baseURL}/menu?q=${query}` : `${baseURL}/menu`;
+      const res = await axios.get(url);
+      setItems(res.data?.data || []);
+    } catch (err) {
+      console.error(err);
+      setErrorItems("Failed to fetch menu items list.");
+    } finally {
+      setLoadingItems(false);
+    }
+  }, []);
+
+  const toggleItemAvailability = async (itemId, currentStatus) => {
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+    try {
+      await axios.patch(
+        `${baseURL}/admin/menu/${itemId}`,
+        { available: !currentStatus },
+        { headers: { Authorization: token } }
+      );
+      fetchItems(searchQuery);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to toggle item availability");
+    }
+  };
+
+  const removeItem = async (itemId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this menu item?");
+    if (!confirmDelete) return;
+
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+    try {
+      setLoadingItems(true);
+      await axios.delete(`${baseURL}/admin/menu/${itemId}`, {
+        headers: { Authorization: token },
+      });
+      fetchItems(searchQuery);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to delete item");
+      setLoadingItems(false);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === "orders") {
       fetchOrders(orderSubTab);
+    } else {
+      fetchItems(searchQuery);
     }
-  }, [activeTab, orderSubTab, fetchOrders]);
+  }, [activeTab, orderSubTab, searchQuery, fetchOrders, fetchItems]);
 
   // Derived statistics metrics
   const pendingCount = orders.filter((o) => o.status === "Pending").length;
@@ -134,8 +192,8 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
                 <i className="fas fa-hamburger"></i>
               </div>
               <div className="stat-content">
-                <h4>Pipeline Orders</h4>
-                <p>{orders.length}</p>
+                <h4>Catalog Items</h4>
+                <p>{items.length}</p>
               </div>
             </div>
           </section>
@@ -297,10 +355,76 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
                   <i className="fas fa-hamburger"></i> Manage Menu Catalog
                 </h2>
               </div>
-              <div style={{ textAlign: "center", padding: "40px", color: "var(--secondary-text-color)" }}>
-                <i className="fas fa-spinner fa-spin" style={{ fontSize: "2rem", color: "var(--color-primary)" }}></i>
-                <p style={{ marginTop: "12px", fontWeight: "600" }}>Syncing item databases...</p>
+
+              {/* Search Bar */}
+              <div className="admin-search-bar-wrapper">
+                <input
+                  type="text"
+                  placeholder="🔍 Search dishes by name or ingredients..."
+                  className="admin-search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
+
+              {/* Items List */}
+              {loadingItems ? (
+                <div style={{ textAlign: "center", padding: "40px" }}>
+                  <i className="fas fa-spinner fa-spin" style={{ fontSize: "2rem", color: "var(--color-primary)" }}></i>
+                  <p style={{ marginTop: "12px", color: "var(--secondary-text-color)", fontWeight: "600" }}>Syncing item databases...</p>
+                </div>
+              ) : errorItems ? (
+                <div style={{ color: "#e74c3c", padding: "20px", textAlign: "center" }}>{errorItems}</div>
+              ) : items.length === 0 ? (
+                <div className="admin-item-card" style={{ textAlign: "center", padding: "40px" }}>
+                  <i className="fas fa-inbox" style={{ fontSize: "2.5rem", color: "var(--border-color)", marginBottom: "12px" }}></i>
+                  <p style={{ fontWeight: "700", color: "var(--secondary-text-color)" }}>No catalog items match your search!</p>
+                </div>
+              ) : (
+                <div className="admin-items-grid">
+                  {items.map((item) => (
+                    <article key={item._id} className="admin-item-card">
+                      <div className="item-left-block">
+                        <img
+                          src={item.image || "https://i.pinimg.com/736x/82/a3/3a/82a33a43be59e913b58efbdfd64e281e.jpg"}
+                          alt={item.name}
+                          className="admin-item-img"
+                        />
+                        <div className="item-details">
+                          <h4>{item.name}</h4>
+                          <div className="item-prices">
+                            <span className="og-price">Rs.{item.price.toFixed(2)}</span>
+                            <span className="discounted-price">Rs.{(item.price * 0.8).toFixed(2)}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="item-right-block">
+                        {/* Toggle Availability Switch */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span className="availability-text">{item.available ? "Available" : "Sold Out"}</span>
+                          <button
+                            className={`toggle-switch-btn ${item.available ? "on" : ""}`}
+                            onClick={() => toggleItemAvailability(item._id, item.available)}
+                          >
+                            <i className={`fas fa-toggle-${item.available ? "on" : "off"}`}></i>
+                          </button>
+                        </div>
+
+                        {/* Control Buttons */}
+                        <div className="item-control-btns">
+                          <button className="item-control-btn edit" title="Edit Item">
+                            <i className="fas fa-edit"></i>
+                          </button>
+                          <button className="item-control-btn delete" title="Delete Item" onClick={() => removeItem(item._id)}>
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </section>
           )}
         </main>
