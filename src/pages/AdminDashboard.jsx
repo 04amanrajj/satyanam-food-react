@@ -15,6 +15,24 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
   const [errorItems, setErrorItems] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Categories State
+  const [categories, setCategories] = useState(["Thali", "Salad", "Beverages", "Dessert"]);
+
+  // Overlay Dialog State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState("add"); // add, edit
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  // Form Fields State
+  const [formFields, setFormFields] = useState({
+    name: "",
+    description: "",
+    image: "",
+    price: "",
+    rating: "",
+    category: "",
+  });
+
   // Track collapse states of order details cards
   const [expandedOrders, setExpandedOrders] = useState({});
 
@@ -70,7 +88,6 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
     const baseURL = "https://satyanaam-food-backend.onrender.com";
 
     try {
-      // The API base URL: /menu?q=query (or just /menu)
       const url = query ? `${baseURL}/menu?q=${query}` : `${baseURL}/menu`;
       const res = await axios.get(url);
       setItems(res.data?.data || []);
@@ -79,6 +96,18 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
       setErrorItems("Failed to fetch menu items list.");
     } finally {
       setLoadingItems(false);
+    }
+  }, []);
+
+  const fetchCategories = useCallback(async () => {
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+    try {
+      const res = await axios.get(baseURL);
+      if (res.data?.data?.menuCategories) {
+        setCategories(res.data.data.menuCategories);
+      }
+    } catch (err) {
+      console.error("Failed to load categories, using defaults:", err);
     }
   }, []);
 
@@ -114,6 +143,101 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
       setLoadingItems(false);
     }
   };
+
+  const resetMenu = async () => {
+    const confirmReset = window.confirm(
+      "DANGER ZONE: Are you sure you want to reset the menu? This will wipe custom changes and restore traditional default thalis!"
+    );
+    if (!confirmReset) return;
+
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+    try {
+      setLoadingItems(true);
+      const res = await axios.post(
+        `${baseURL}/admin/menu/reset`,
+        {},
+        { headers: { Authorization: token } }
+      );
+      alert(res.data?.message || "Menu reset successful!");
+      fetchItems(searchQuery);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to reset menu");
+      setLoadingItems(false);
+    }
+  };
+
+  const openAddModal = () => {
+    setModalMode("add");
+    setSelectedItem(null);
+    setFormFields({
+      name: "",
+      description: "",
+      image: "https://i.pinimg.com/736x/82/a3/3a/82a33a43be59e913b58efbdfd64e281e.jpg",
+      price: "",
+      rating: "5",
+      category: categories[0] || "Thali",
+    });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (item) => {
+    setModalMode("edit");
+    setSelectedItem(item);
+    setFormFields({
+      name: item.name || "",
+      description: item.description || "",
+      image: item.image || "",
+      price: item.price || "",
+      rating: item.rating || "5",
+      category: item.category || categories[0] || "Thali",
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleFormFieldChange = (e) => {
+    const { name, value } = e.target;
+    setFormFields((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const baseURL = "https://satyanaam-food-backend.onrender.com";
+
+    // Basic Validations
+    if (!formFields.name || !formFields.description || !formFields.price || !formFields.category) {
+      alert("Please fill all required inputs accurately.");
+      return;
+    }
+
+    try {
+      setLoadingItems(true);
+      if (modalMode === "add") {
+        await axios.post(`${baseURL}/admin/menu`, formFields, {
+          headers: { Authorization: token },
+        });
+      } else {
+        await axios.patch(
+          `${baseURL}/admin/menu/${selectedItem._id}`,
+          formFields,
+          { headers: { Authorization: token } }
+        );
+      }
+      setIsModalOpen(false);
+      fetchItems(searchQuery);
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Failed to save menu changes.");
+      setLoadingItems(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   useEffect(() => {
     if (activeTab === "orders") {
@@ -157,7 +281,10 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
             >
               <i className="fas fa-utensils"></i> Manage Menu Items
             </button>
-            <button className="admin-nav-btn danger-zone" onClick={handleLogout}>
+            <button className="admin-nav-btn danger-zone" onClick={resetMenu}>
+              <i className="fas fa-undo-alt"></i> Reset Menu Catalog
+            </button>
+            <button className="admin-nav-btn" onClick={handleLogout} style={{ border: "1px solid var(--border-color)", marginTop: "20px" }}>
               <i className="fas fa-sign-out-alt"></i> Logout Session
             </button>
           </nav>
@@ -241,17 +368,6 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
               ) : (
                 <div className="admin-orders-list">
                   {orders.map((order) => {
-                    const statusClass =
-                      order.status === "Pending"
-                        ? "warning"
-                        : order.status === "Preparing"
-                        ? "primary"
-                        : order.status === "Rejected"
-                        ? "danger"
-                        : order.status === "Cancelled"
-                        ? "secondary"
-                        : "success";
-
                     return (
                       <article key={order._id} className="admin-order-card">
                         <div className="admin-order-header">
@@ -354,6 +470,9 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
                 <h2>
                   <i className="fas fa-hamburger"></i> Manage Menu Catalog
                 </h2>
+                <button className="action-btn accept" onClick={openAddModal}>
+                  <i className="fas fa-plus"></i> Add New Dish
+                </button>
               </div>
 
               {/* Search Bar */}
@@ -413,7 +532,7 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
 
                         {/* Control Buttons */}
                         <div className="item-control-btns">
-                          <button className="item-control-btn edit" title="Edit Item">
+                          <button className="item-control-btn edit" title="Edit Item" onClick={() => openEditModal(item)}>
                             <i className="fas fa-edit"></i>
                           </button>
                           <button className="item-control-btn delete" title="Delete Item" onClick={() => removeItem(item._id)}>
@@ -429,6 +548,118 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
           )}
         </main>
       </div>
+
+      {/* Glassmorphic Add/Edit Dialog Modal */}
+      {isModalOpen && (
+        <div className="admin-modal-overlay">
+          <form className="admin-modal-card" onSubmit={handleFormSubmit}>
+            <header className="modal-header-block">
+              <h3>{modalMode === "add" ? "Add New Dish Item" : "Modify Catalog Item"}</h3>
+              <button type="button" className="modal-close-btn" onClick={() => setIsModalOpen(false)}>
+                ✕
+              </button>
+            </header>
+
+            <div className="modal-body-block">
+              <div className="modal-input-group">
+                <label>Dish Name *</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="modal-input-field"
+                  placeholder="e.g. Special Paneer Thali"
+                  value={formFields.name}
+                  onChange={handleFormFieldChange}
+                  required
+                />
+              </div>
+
+              <div className="modal-input-group">
+                <label>Ingredients/Description *</label>
+                <input
+                  type="text"
+                  name="description"
+                  className="modal-input-field"
+                  placeholder="e.g. Shahi paneer, butter naan, dal makhani"
+                  value={formFields.description}
+                  onChange={handleFormFieldChange}
+                  required
+                />
+              </div>
+
+              <div className="modal-input-group">
+                <label>Image Link URL</label>
+                <input
+                  type="text"
+                  name="image"
+                  className="modal-input-field"
+                  placeholder="e.g. https://www.images/dish.jpg"
+                  value={formFields.image}
+                  onChange={handleFormFieldChange}
+                />
+              </div>
+
+              <div className="modal-input-group">
+                <label>Menu Category *</label>
+                <select
+                  name="category"
+                  className="modal-input-field"
+                  value={formFields.category}
+                  onChange={handleFormFieldChange}
+                  style={{ color: "black" }}
+                  required
+                >
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat} style={{ color: "black" }}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "flex", gap: "16px" }}>
+                <div className="modal-input-group" style={{ flex: 1 }}>
+                  <label>Original Price (Rs.) *</label>
+                  <input
+                    type="number"
+                    name="price"
+                    className="modal-input-field"
+                    placeholder="99"
+                    value={formFields.price}
+                    onChange={handleFormFieldChange}
+                    required
+                  />
+                </div>
+
+                {modalMode === "add" && (
+                  <div className="modal-input-group" style={{ flex: 1 }}>
+                    <label>Rating (1-5)</label>
+                    <input
+                      type="number"
+                      name="rating"
+                      className="modal-input-field"
+                      placeholder="5"
+                      min="1"
+                      max="5"
+                      value={formFields.rating}
+                      onChange={handleFormFieldChange}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <footer className="modal-footer-block">
+              <button type="button" className="modal-btn cancel" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </button>
+              <button type="submit" className="modal-btn save">
+                {modalMode === "add" ? "Add Item" : "Save Changes"}
+              </button>
+            </footer>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
