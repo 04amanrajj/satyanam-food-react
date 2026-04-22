@@ -940,4 +940,16 @@
   }
 }
 
+.admin-nav-btn.logout-btn {
+  border: 1px solid var(--border-color);
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .admin-nav-btn.logout-btn {
+    margin-top: 0;
+  }
+}
+
+
 

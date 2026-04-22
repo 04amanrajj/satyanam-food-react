@@ -284,7 +284,7 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
             <button className="admin-nav-btn danger-zone" onClick={resetMenu}>
               <i className="fas fa-undo-alt"></i> Reset Menu Catalog
             </button>
-            <button className="admin-nav-btn" onClick={handleLogout} style={{ border: "1px solid var(--border-color)", marginTop: "20px" }}>
+            <button className="admin-nav-btn logout-btn" onClick={handleLogout}>
               <i className="fas fa-sign-out-alt"></i> Logout Session
             </button>
           </nav>
