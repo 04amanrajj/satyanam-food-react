@@ -76,7 +76,7 @@ const Profile = () => {
 
       const populatedOrders = ordersData.map((order) => {
         const itemsDetail = (order.items || []).map((item) => {
-          const menuInfo = menuMap.get(item.itemid);
+          const menuInfo = menuMap.get(item.itemid || item.item?._id || item.item?.id);
           return {
             name: menuInfo?.name || "Delicious Thali Item",
             price: menuInfo?.price || item.price || 150,
