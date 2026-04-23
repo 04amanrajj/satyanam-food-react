@@ -301,6 +301,7 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
               <div className="stat-content">
                 <h4>Completed Revenue</h4>
                 <p>Rs.{totalCompletedRevenue.toFixed(2)}</p>
+                <small className="stat-description">Earnings from delivered orders</small>
               </div>
             </div>
 
@@ -311,6 +312,7 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
               <div className="stat-content">
                 <h4>Pending Orders</h4>
                 <p>{pendingCount}</p>
+                <small className="stat-description">Thalis needing kitchen prep</small>
               </div>
             </div>
 
@@ -321,6 +323,7 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
               <div className="stat-content">
                 <h4>Catalog Items</h4>
                 <p>{items.length}</p>
+                <small className="stat-description">Total active menu dishes</small>
               </div>
             </div>
           </section>
