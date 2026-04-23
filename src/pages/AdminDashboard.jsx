@@ -43,16 +43,13 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
     }));
   };
 
-  const fetchOrders = useCallback(async (statusFilter) => {
+  const fetchOrders = useCallback(async () => {
     setLoadingOrders(true);
     setErrorOrders("");
     const baseURL = "https://satyanaam-food-backend.onrender.com";
 
     try {
-      const url = statusFilter
-        ? `${baseURL}/admin/order?status=${statusFilter}`
-        : `${baseURL}/admin/order`;
-
+      const url = `${baseURL}/admin/order`;
       const res = await axios.get(url, {
         headers: { Authorization: token },
       });
@@ -74,7 +71,7 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
         { status: newStatus },
         { headers: { Authorization: token } }
       );
-      fetchOrders(orderSubTab);
+      fetchOrders();
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Failed to update order status");
@@ -241,17 +238,20 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
 
   useEffect(() => {
     if (activeTab === "orders") {
-      fetchOrders(orderSubTab);
+      fetchOrders();
     } else {
       fetchItems(searchQuery);
     }
-  }, [activeTab, orderSubTab, searchQuery, fetchOrders, fetchItems]);
+  }, [activeTab, searchQuery, fetchOrders, fetchItems]);
 
   // Derived statistics metrics
   const pendingCount = orders.filter((o) => o.status === "Pending").length;
   const totalCompletedRevenue = orders
     .filter((o) => o.status === "Delivered")
     .reduce((sum, o) => sum + Number(o.totalprice || 0), 0);
+
+  // Compute local filtered orders list for current active tab
+  const filteredOrders = orders.filter((o) => o.status === orderSubTab);
 
   return (
     <div className="admin-dashboard-container">
@@ -360,14 +360,14 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
                 </div>
               ) : errorOrders ? (
                 <div style={{ color: "#e74c3c", padding: "20px", textAlign: "center" }}>{errorOrders}</div>
-              ) : orders.length === 0 ? (
+              ) : filteredOrders.length === 0 ? (
                 <div className="admin-order-card" style={{ textAlign: "center", padding: "40px" }}>
                   <i className="fas fa-inbox" style={{ fontSize: "2.5rem", color: "var(--border-color)", marginBottom: "12px" }}></i>
                   <p style={{ fontWeight: "700", color: "var(--secondary-text-color)" }}>No orders found at this stage!</p>
                 </div>
               ) : (
                 <div className="admin-orders-list">
-                  {orders.map((order) => {
+                  {filteredOrders.map((order) => {
                     return (
                       <article key={order._id} className="admin-order-card">
                         <div className="admin-order-header">
