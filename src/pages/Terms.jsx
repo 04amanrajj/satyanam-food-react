@@ -13,7 +13,7 @@ export default function Terms() {
                 <h1 style={{ fontSize: "2.5rem", fontWeight: "800", color: "var(--color-primary)", marginBottom: "10px", fontFamily: "'Outfit', sans-serif" }}>Terms of Service</h1>
                 <p style={{ color: "var(--secondary-text-color)", fontSize: "0.95rem", marginBottom: "30px" }}>Last Updated: April 12, 2026</p>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "25px", color: "var(--text-color)", lineHeight: "1.7" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "25px", color: "var(--primary-text-color)", lineHeight: "1.7" }}>
                     <section>
                         <h2 style={{ fontSize: "1.4rem", fontWeight: "700", marginBottom: "12px", display: "flex", alignItems: "center", gap: "10px", color: "var(--color-primary)" }}>
                             <i className="fas fa-info-circle"></i> 1. Acceptance of Terms
