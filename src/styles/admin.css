@@ -700,7 +700,7 @@
 @media (max-width: 768px) {
   .admin-dashboard-container {
     padding: 0 16px;
-    margin: 20px auto;
+    margin: 90px auto 20px auto; /* Push down on mobile screens to prevent navbar overlap */
   }
 
   .admin-sidebar {
@@ -726,14 +726,9 @@
 
   .admin-nav-list {
     flex-direction: row;
-    overflow-x: auto;
+    flex-wrap: wrap; /* Wrap buttons to multiple lines instead of a long scrollable row */
     padding-bottom: 8px;
     gap: 8px;
-    scrollbar-width: none; /* Hide scrollbars */
-  }
-
-  .admin-nav-list::-webkit-scrollbar {
-    display: none;
   }
 
   .admin-nav-btn {

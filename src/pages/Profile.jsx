@@ -23,6 +23,8 @@ const Profile = () => {
     setToken("");
     setUser(null);
     setOrders([]);
+    // Ensure clean state redirect to main page
+    window.location.href = "/";
   };
 
   const fetchProfileData = useCallback(async (authToken, currentUser) => {
@@ -41,8 +43,11 @@ const Profile = () => {
         });
         if (userRes.data?.message) {
           userData = userRes.data.message;
-          setUser(userData);
-          localStorage.setItem("user", JSON.stringify(userData));
+          // Only update state if values have actually changed (breaks the infinite API loop!)
+          if (JSON.stringify(currentUser) !== JSON.stringify(userData)) {
+            setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
+          }
         }
       } catch (err) {
         console.error("Failed to fetch fresh user details:", err);

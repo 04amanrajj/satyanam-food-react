@@ -85,7 +85,12 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
     const baseURL = "https://satyanaam-food-backend.onrender.com";
 
     try {
-      const url = query ? `${baseURL}/menu?q=${query}` : `${baseURL}/menu`;
+      // Use dynamic cache-busting parameter on minprice to bypass Redis caching (menuitems key depends on minprice filter)
+      const buster = 0.00001 + Math.random() * 0.00001;
+      const url = query 
+        ? `${baseURL}/menu?q=${query}&minprice=${buster}` 
+        : `${baseURL}/menu?minprice=${buster}`;
+      
       const res = await axios.get(url);
       setItems(res.data?.data || []);
     } catch (err) {
@@ -110,15 +115,29 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
 
   const toggleItemAvailability = async (itemId, currentStatus) => {
     const baseURL = "https://satyanaam-food-backend.onrender.com";
+    
+    // Optimistic Update: instantly flip available in UI for instant responsiveness
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item._id === itemId ? { ...item, available: !currentStatus } : item
+      )
+    );
+
     try {
       await axios.patch(
         `${baseURL}/admin/menu/${itemId}`,
         { available: !currentStatus },
         { headers: { Authorization: token } }
       );
-      fetchItems(searchQuery);
+      // Success! No extra fetch needed since local state is already correctly updated.
     } catch (err) {
       console.error(err);
+      // Revert local state to previous if patch fails
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item._id === itemId ? { ...item, available: currentStatus } : item
+        )
+      );
       alert(err.response?.data?.message || "Failed to toggle item availability");
     }
   };
@@ -207,6 +226,16 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
     // Basic Validations
     if (!formFields.name || !formFields.description || !formFields.price || !formFields.category) {
       alert("Please fill all required inputs accurately.");
+      return;
+    }
+
+    if (Number(formFields.price) <= 0) {
+      alert("Price must be a positive number.");
+      return;
+    }
+
+    if (modalMode === "add" && (Number(formFields.rating) < 1 || Number(formFields.rating) > 5)) {
+      alert("Rating must be between 1 and 5.");
       return;
     }
 
