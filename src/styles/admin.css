@@ -951,5 +951,73 @@
   }
 }
 
+/* Scrollable Table Wrapper Controls */
+.order-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.order-table {
+  width: 100%;
+  min-width: 500px; /* Enforces readable columns, forcing horizontal scroll on mobile wrapper instead of page */
+  border-collapse: collapse;
+}
+
+/* Robust Box-Sizing Reset */
+.admin-dashboard-container,
+.admin-dashboard-container * {
+  box-sizing: border-box !important;
+}
+
+/* Page-Level Scroll Prevention & Containment Rules */
+.admin-dashboard-container {
+  width: 100%;
+  max-width: 1280px;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .admin-layout-grid {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .admin-nav-list {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .item-details {
+    min-width: 0; /* Prevents long flex text items from stretching the viewport */
+  }
+
+  .admin-search-bar-wrapper,
+  .admin-search-input {
+    max-width: 100%;
+  }
+
+  /* Make sure panel card does not overflow */
+  .admin-panel-card {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+
+
 
 

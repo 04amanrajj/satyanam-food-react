@@ -400,24 +400,26 @@ const AdminDashboard = ({ token, user, handleLogout }) => {
                         )}
 
                         {/* Ordered Items Table */}
-                        <table className="order-table" style={{ marginTop: "16px" }}>
-                          <thead>
-                            <tr>
-                              <th>Dish Name</th>
-                              <th style={{ textAlign: "center" }}>Qty</th>
-                              <th style={{ textAlign: "right" }}>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {order.items?.map((ele, idx) => (
-                              <tr key={idx}>
-                                <td>{ele.item?.name || "Delicious Thali"}</td>
-                                <td style={{ textAlign: "center" }}>{ele.quantity}</td>
-                                <td style={{ textAlign: "right" }}>Rs.{(Number(ele.item?.price || 150) * 0.8).toFixed(2)}</td>
+                        <div className="order-table-wrapper">
+                          <table className="order-table" style={{ marginTop: "16px" }}>
+                            <thead>
+                              <tr>
+                                <th>Dish Name</th>
+                                <th style={{ textAlign: "center" }}>Qty</th>
+                                <th style={{ textAlign: "right" }}>Price</th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+                            <tbody>
+                              {order.items?.map((ele, idx) => (
+                                <tr key={idx}>
+                                  <td>{ele.item?.name || "Delicious Thali"}</td>
+                                  <td style={{ textAlign: "center" }}>{ele.quantity}</td>
+                                  <td style={{ textAlign: "right" }}>Rs.{(Number(ele.item?.price || 150) * 0.8).toFixed(2)}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
 
                         {/* Actions group */}
                         <div className="admin-order-actions">
